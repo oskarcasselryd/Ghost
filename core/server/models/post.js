@@ -767,75 +767,118 @@ Post = ghostBookshelf.Model.extend({
         }
         // ---------------------------------
         if (isContributor && isEdit) { // BRANCH #6 && #7
-            // ------------ COVERAGE ------------
-            // if (!isChanging('status')) { // BRANCH #8
-            //     coverage[8] = true;
-            // }
-            // if (!isChanging('author_id')) { // BRANCH #9
-            //     coverage[9] = true;
-            // }
-            // if (isDraft()) { // BRANCH #10
-            //     coverage[10] = true;
-            // }
-            // if (isCurrentOwner()) { // BRANCH #11
-            //     coverage[11] = true;
-            // }
+            // ORIGINAL code
+            //hasUserPermission = !isChanging('status') && !isChanging('author_id') && isDraft() && isCurrentOwner(); // BRANCH #8 && #9 && #10 && #11
             // ---------------------------------
+            hasUserPermission = !isChanging('status');
+            // ------------ COVERAGE ------------
+            if (hasUserPermission) { // BRANCH #8
+                coverage[8] = true;
+            }
+            // ---------------------------------
+            if(hasUserPermission) {
+                hasUserPermission = hasUserPermission && !isChanging('author_id');
+                // ------------ COVERAGE ------------
+                if (hasUserPermission) { // BRANCH #9
+                    coverage[9] = true;
+                }
+                // ---------------------------------
+                if(hasUserPermission) {
+                    hasUserPermission = hasUserPermission && isDraft();
+                    // ------------ COVERAGE ------------
+                    if (hasUserPermission) { // BRANCH #10
+                        coverage[10] = true;
+                    }
+                    // ---------------------------------
+                    if(hasUserPermission) {
+                        hasUserPermission = hasUserPermission && isCurrentOwner();
+                        // ------------ COVERAGE ------------
+                        if (hasUserPermission) { // BRANCH #11
+                            coverage[11] = true;
+                        }
+                        // ---------------------------------
+                    }
+                }
+            }
             // Only allow contributor edit if neither status or author id are changing, and the post is a draft post
-            hasUserPermission = !isChanging('status') && !isChanging('author_id') && isDraft() && isCurrentOwner(); // BRANCH #8 && #9 && #10 && #11
+            //hasUserPermission = !isChanging('status') && !isChanging('author_id') && isDraft() && isCurrentOwner(); // BRANCH #8 && #9 && #10 && #11
         } else if (isContributor && isAdd) { // BRANCH #12 && #13
-            // ------------ COVERAGE ------------
-            // if (!isPublished()) { // BRANCH #14
-            //     coverage[14] = true;
-            // }
-            // if (isOwner()) { // BRANCH #15
-            //     coverage[15] = true;
-            // }
+            // ORIGINAL code
+            //hasUserPermission = !isPublished() && isOwner(); // BRANCH #14 && #15
             // ---------------------------------
+            hasUserPermission = !isPublished();
+            // ------------ COVERAGE ------------
+            if (hasUserPermission) { // BRANCH #14
+                coverage[14] = true;
+            }
+            // ---------------------------------
+            if(hasUserPermission) {
+                hasUserPermission = hasUserPermission && isOwner();
+                // ------------ COVERAGE ------------
+                if (hasUserPermission) { // BRANCH #15
+                    coverage[15] = true;
+                }
+                // ---------------------------------
+            }
             // If adding, make sure it's a draft post and has the correct ownership
-            hasUserPermission = !isPublished() && isOwner(); // BRANCH #14 && #15
+            //hasUserPermission = !isPublished() && isOwner(); // BRANCH #14 && #15
         } else if (isContributor && isDestroy) { // BRANCH #16 && #17
+            // ORIGINAL code
+            //hasUserPermission = isCurrentOwner() && isDraft(); // BRANCH #18 && #19
+            // ---------------------------------
+            hasUserPermission = isCurrentOwner();
+            // ------------ COVERAGE ------------
+            if (hasUserPermission) { // BRANCH #18
+                coverage[18] = true;
+            }
+            // ---------------------------------
+            if(hasUserPermission) {
+                hasUserPermission = hasUserPermission && isDraft();
+                // ------------ COVERAGE ------------
+                if (hasUserPermission) { // BRANCH #19
+                    coverage[19] = true;
+                }
+                // ---------------------------------
+            }
             // If destroying, only allow contributor to destroy their own draft posts
-            // ------------ COVERAGE ------------
-            // if (isCurrentOwner()) { // BRANCH #18
-            //     coverage[18] = true;
-            // }
-            // if (isDraft()) { // BRANCH #19
-            //     coverage[19] = true;
-            // }
-            // ---------------------------------
-            hasUserPermission = isCurrentOwner() && isDraft(); // BRANCH #18 && #19
+            //hasUserPermission = isCurrentOwner() && isDraft(); // BRANCH #18 && #19
         } else if (isAuthor && isEdit) { // BRANCH #20 && #21
-            // ------------ COVERAGE ------------
-            // if (isCurrentOwner()) { // BRANCH #22
-            //     coverage[22] = true;
-            // }
-            // if (!isChanging('author_id')) { // BRANCH #23
-            //     coverage[23] = true;
-            // }
+            // ORIGINAL code
+            //hasUserPermission = isCurrentOwner() && !isChanging('author_id'); // BRANCH #22 && #23
             // ---------------------------------
+            hasUserPermission = isCurrentOwner();
+            // ------------ COVERAGE ------------
+            if (hasUserPermission) { // BRANCH #22
+                coverage[22] = true;
+            }
+            // ---------------------------------
+            if(hasUserPermission) {
+                hasUserPermission = hasUserPermission && !isChanging('author_id');
+                // ------------ COVERAGE ------------
+                if (hasUserPermission) { // BRANCH #23
+                    coverage[23] = true;
+                }
+                // ---------------------------------
+            }
             // Don't allow author to change author ids
-            hasUserPermission = isCurrentOwner() && !isChanging('author_id'); // BRANCH #22 && #23
+            //hasUserPermission = isCurrentOwner() && !isChanging('author_id'); // BRANCH #22 && #23
         } else if (isAuthor && isAdd) { // BRANCH #24 && #25
             // Make sure new post is authored by the current user
             hasUserPermission = isOwner();
         } else if (postModel) { // BRANCH #26
             // ------------ COVERAGE ------------
             if (hasUserPermission) { // BRANCH #28
-                coverage[28] = true;
-            }
-            // HACK for branch #27
-            let reserve = hasUserPermission;
-            // ---------------------------------
-            hasUserPermission = hasUserPermission || isCurrentOwner(); // BRANCH #27 && #28
-            // ------------ COVERAGE ------------
-            // HACK branch #27
-            if (hasUserPermission && reserve == false) { // BRANCH #27
                 coverage[27] = true;
             }
-            if (hasUserPermission) { // BRANCH #28
+            // ---------------------------------
+            if(!hasUserPermission) {
+                hasUserPermission = isCurrentOwner();
+                // ------------ COVERAGE ------------
                 coverage[28] = true;
+                // ---------------------------------
             }
+            // ORIGINAL code
+            //hasUserPermission = hasUserPermission || isCurrentOwner(); // BRANCH #27 && #28
             // ---------------------------------
         }
 
