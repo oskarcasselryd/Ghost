@@ -2,6 +2,21 @@ var should = require('should'),
     getStructuredData = require('../../../../server/data/meta/structured_data');
 
 describe('getStructuredData', function () {
+    var coverageObject;
+    before(function () {
+        coverageObject = new Array(31).fill(false);
+        //coverageObject = {};
+    });
+
+    after(function () {
+        console.log(coverageObject);
+        let sum = 0;
+        for (var i = 0; i < coverageObject.length; i = i + 1) {
+            if (coverageObject[i]) sum = sum + 1;
+        }
+        console.log(sum / coverageObject.length);
+    });
+
     it('should return structured data from metadata per post', function (done) {
         var metadata = {
             blog: {
@@ -34,7 +49,7 @@ describe('getStructuredData', function () {
             creatorTwitter: '@twitterpage',
             keywords: ['one', 'two', 'tag'],
             metaDescription: 'Post meta description'
-        },  structuredData = getStructuredData(metadata);
+        },  structuredData = getStructuredData(metadata, coverageObject);
 
         should.deepEqual(structuredData, {
             'article:modified_time': '2016-01-21T22:13:05.412Z',
@@ -101,7 +116,7 @@ describe('getStructuredData', function () {
             creatorTwitter: '@twitterpage',
             keywords: ['one', 'two', 'tag'],
             metaDescription: 'Post meta description'
-        },  structuredData = getStructuredData(metadata);
+        },  structuredData = getStructuredData(metadata, coverageObject);
 
         should.deepEqual(structuredData, {
             'article:modified_time': '2016-01-21T22:13:05.412Z',
@@ -159,7 +174,7 @@ describe('getStructuredData', function () {
             twitterDescription: null,
             keywords: null,
             metaDescription: null
-        },  structuredData = getStructuredData(metadata);
+        },  structuredData = getStructuredData(metadata, coverageObject);
 
         should.deepEqual(structuredData, {
             'article:modified_time': '2016-01-21T22:13:05.412Z',
@@ -176,3 +191,4 @@ describe('getStructuredData', function () {
         done();
     });
 });
+
