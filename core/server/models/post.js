@@ -655,15 +655,23 @@ Post = ghostBookshelf.Model.extend({
         return destroyPost();
     },
 
-    permissible: function permissible(postModelOrId, action, context, unsafeAttrs, loadedPermissions, hasUserPermission, hasAppPermission) {
+    permissible: function permissible(coverage, postModelOrId, action, context, unsafeAttrs, loadedPermissions, hasUserPermission, hasAppPermission) {
         var self = this,
             postModel = postModelOrId,
             result = {},
             origArgs, isContributor, isAuthor, isEdit, isAdd, isDestroy;
 
+        // ------------ COVERAGE ------------
+        if (_.isNumber(postModelOrId)) { // BRANCH #0
+            coverage[0] = true;
+        }
+        if (!_.isString(postModelOrId)) { // BRANCH #1
+            coverage[1] = true;
+        }
+        // ---------------------------------
         // If we passed in an id instead of a model, get the model
         // then check the permissions
-        if (_.isNumber(postModelOrId) || _.isString(postModelOrId)) {
+        if (_.isNumber(postModelOrId) || _.isString(postModelOrId)) { // BRANCH #0 && // BRANCH #1
             // Grab the original args without the first one
             origArgs = _.toArray(arguments).slice(1);
 
@@ -703,32 +711,140 @@ Post = ghostBookshelf.Model.extend({
             return postModel.get('status') === 'draft';
         }
 
-        isContributor = loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Contributor'});
-        isAuthor = loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Author'});
+        // ------------ COVERAGE ------------
+        if (loadedPermissions.user) { // BRANCH #2
+            coverage[2] = true;
+        }
+        if (_.some(loadedPermissions.user.roles, {name: 'Contributor'})) { // BRANCH #3
+            coverage[3] = true;
+        }
+        if (loadedPermissions.user) { // BRANCH #4
+            coverage[4] = true;
+        }
+        if (_.some(loadedPermissions.user.roles, {name: 'Author'})) { // BRANCH #5
+            coverage[5] = true;
+        }
+        // ---------------------------------
+        isContributor = loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Contributor'}); // BRANCH #2 && #3
+        isAuthor = loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Author'}); // BRANCH #4 && #5
         isEdit = (action === 'edit');
         isAdd = (action === 'add');
         isDestroy = (action === 'destroy');
 
-        if (isContributor && isEdit) {
+        // ------------ COVERAGE ------------
+        if (isContributor) { // BRANCH #6
+            coverage[6] = true;
+        }
+        if (isEdit) { // BRANCH #7
+            coverage[7] = true;
+        }
+        if (isContributor) { // BRANCH #12
+            coverage[12] = true;
+        }
+        if (isAdd) { // BRANCH #13
+            coverage[13] = true;
+        }
+        if (isContributor) { // BRANCH #16
+            coverage[16] = true;
+        }
+        if (isDestroy) { // BRANCH #17
+            coverage[17] = true;
+        }
+        if (isAuthor) { // BRANCH #20
+            coverage[20] = true;
+        }
+        if (isEdit) { // BRANCH #21
+            coverage[21] = true;
+        }
+        if (isAuthor) { // BRANCH #24
+            coverage[24] = true;
+        }
+        if (isAdd) { // BRANCH #25
+            coverage[25] = true;
+        }
+        if (postModel) { // BRANCH #25
+            coverage[26] = true;
+        }
+        // ---------------------------------
+        if (isContributor && isEdit) { // BRANCH #6 && #7
+            // ------------ COVERAGE ------------
+            // if (!isChanging('status')) { // BRANCH #8
+            //     coverage[8] = true;
+            // }
+            // if (!isChanging('author_id')) { // BRANCH #9
+            //     coverage[9] = true;
+            // }
+            // if (isDraft()) { // BRANCH #10
+            //     coverage[10] = true;
+            // }
+            // if (isCurrentOwner()) { // BRANCH #11
+            //     coverage[11] = true;
+            // }
+            // ---------------------------------
             // Only allow contributor edit if neither status or author id are changing, and the post is a draft post
-            hasUserPermission = !isChanging('status') && !isChanging('author_id') && isDraft() && isCurrentOwner();
-        } else if (isContributor && isAdd) {
+            hasUserPermission = !isChanging('status') && !isChanging('author_id') && isDraft() && isCurrentOwner(); // BRANCH #8 && #9 && #10 && #11
+        } else if (isContributor && isAdd) { // BRANCH #12 && #13
+            // ------------ COVERAGE ------------
+            // if (!isPublished()) { // BRANCH #14
+            //     coverage[14] = true;
+            // }
+            // if (isOwner()) { // BRANCH #15
+            //     coverage[15] = true;
+            // }
+            // ---------------------------------
             // If adding, make sure it's a draft post and has the correct ownership
-            hasUserPermission = !isPublished() && isOwner();
-        } else if (isContributor && isDestroy) {
+            hasUserPermission = !isPublished() && isOwner(); // BRANCH #14 && #15
+        } else if (isContributor && isDestroy) { // BRANCH #16 && #17
             // If destroying, only allow contributor to destroy their own draft posts
-            hasUserPermission = isCurrentOwner() && isDraft();
-        } else if (isAuthor && isEdit) {
+            // ------------ COVERAGE ------------
+            // if (isCurrentOwner()) { // BRANCH #18
+            //     coverage[18] = true;
+            // }
+            // if (isDraft()) { // BRANCH #19
+            //     coverage[19] = true;
+            // }
+            // ---------------------------------
+            hasUserPermission = isCurrentOwner() && isDraft(); // BRANCH #18 && #19
+        } else if (isAuthor && isEdit) { // BRANCH #20 && #21
+            // ------------ COVERAGE ------------
+            // if (isCurrentOwner()) { // BRANCH #22
+            //     coverage[22] = true;
+            // }
+            // if (!isChanging('author_id')) { // BRANCH #23
+            //     coverage[23] = true;
+            // }
+            // ---------------------------------
             // Don't allow author to change author ids
-            hasUserPermission = isCurrentOwner() && !isChanging('author_id');
-        } else if (isAuthor && isAdd) {
+            hasUserPermission = isCurrentOwner() && !isChanging('author_id'); // BRANCH #22 && #23
+        } else if (isAuthor && isAdd) { // BRANCH #24 && #25
             // Make sure new post is authored by the current user
             hasUserPermission = isOwner();
-        } else if (postModel) {
-            hasUserPermission = hasUserPermission || isCurrentOwner();
+        } else if (postModel) { // BRANCH #26
+            // ------------ COVERAGE ------------
+            if (hasUserPermission) { // BRANCH #28
+                coverage[28] = true;
+            }
+            // HACK for branch #27
+            let reserve = hasUserPermission;
+            // ---------------------------------
+            hasUserPermission = hasUserPermission || isCurrentOwner(); // BRANCH #27 && #28
+            // ------------ COVERAGE ------------
+            // HACK branch #27
+            if (hasUserPermission && reserve == false) { // BRANCH #27
+                coverage[27] = true;
+            }
+            if (hasUserPermission) { // BRANCH #28
+                coverage[28] = true;
+            }
+            // ---------------------------------
         }
 
-        if (isContributor) {
+        // ------------ COVERAGE ------------
+        if (isContributor) { // BRANCH #29
+            coverage[29] = true;
+        }
+        // ---------------------------------
+        if (isContributor) { // BRANCH #29
             // Note: at the moment primary_tag is a computed field,
             // meaning we don't add it to this list. However, if the primary_tag
             // ever becomes a db field rather than a computed field, add it to this list
@@ -737,7 +853,15 @@ Post = ghostBookshelf.Model.extend({
             result.excludedAttrs = ['tags'];
         }
 
-        if (hasUserPermission && hasAppPermission) {
+        // ------------ COVERAGE ------------
+        if (hasUserPermission) { // BRANCH #30
+            coverage[30] = true;
+        }
+        if (hasAppPermission) { // BRANCH #31
+            coverage[31] = true;
+        }
+        // ---------------------------------
+        if (hasUserPermission && hasAppPermission) { // BRANCH #30 && #31
             return Promise.resolve(result);
         }
 
