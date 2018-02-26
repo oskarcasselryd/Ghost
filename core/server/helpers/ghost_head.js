@@ -126,9 +126,17 @@ module.exports = function ghost_head(options) { // eslint-disable-line camelcase
             debug('end fetch');
 
             if (context) {
+                // TODO: Print id
+
                 // head is our main array that holds our meta data
-                if (metaData.metaDescription && metaData.metaDescription.length > 0) {
-                    head.push('<meta name="description" content="' + escapeExpression(metaData.metaDescription) + '" />');
+                if (metaData.metaDescription) {
+                    // TODO: Print id
+
+                    if (metaData.metaDescription.length > 0) {
+                        // TODO: Print id
+
+                        head.push('<meta name="description" content="' + escapeExpression(metaData.metaDescription) + '" />');
+                    }
                 }
 
                 head.push('<link rel="shortcut icon" href="' + favicon + '" type="image/' + iconType + '" />');
@@ -137,35 +145,71 @@ module.exports = function ghost_head(options) { // eslint-disable-line camelcase
                 head.push('<meta name="referrer" content="' + referrerPolicy + '" />');
 
                 // show amp link in post when 1. we are not on the amp page and 2. amp is enabled
-                if (_.includes(context, 'post') && !_.includes(context, 'amp') && settingsCache.get('amp')) {
-                    head.push('<link rel="amphtml" href="' +
-                        escapeExpression(metaData.ampUrl) + '" />');
+                if (_.includes(context, 'post')) {
+                    // TODO: Print id
+
+                    if (!_.includes(context, 'amp')) {
+                        // TODO: Print id
+
+                        if (settingsCache.get('amp')) {
+                            // TODO: Print id
+
+                            head.push('<link rel="amphtml" href="' +
+                                escapeExpression(metaData.ampUrl) + '" />');
+                        }
+                    }
                 }
 
                 if (metaData.previousUrl) {
+                    // TODO: Print id
+
                     head.push('<link rel="prev" href="' +
                         escapeExpression(metaData.previousUrl) + '" />');
                 }
 
                 if (metaData.nextUrl) {
+                    // TODO: Print id
+
                     head.push('<link rel="next" href="' +
                         escapeExpression(metaData.nextUrl) + '" />');
                 }
 
-                if (!_.includes(context, 'paged') && useStructuredData) {
-                    head.push('');
-                    head.push.apply(head, finaliseStructuredData(metaData));
-                    head.push('');
+                if (!_.includes(context, 'paged')) {
+                    // TODO: Print id
 
-                    if (metaData.schema) {
-                        head.push('<script type="application/ld+json">\n' +
-                            JSON.stringify(metaData.schema, null, '    ') +
-                            '\n    </script>\n');
+                    if (useStructuredData) {
+                        // TODO: Print id
+
+                        head.push('');
+                        head.push.apply(head, finaliseStructuredData(metaData));
+                        head.push('');
+
+                        if (metaData.schema) {
+                            // TODO: Print id
+
+                            head.push('<script type="application/ld+json">\n' +
+                                JSON.stringify(metaData.schema, null, '    ') +
+                                '\n    </script>\n');
+                        }
                     }
                 }
 
-                if (client && client.id && client.secret && !_.includes(context, 'amp')) {
-                    head.push(getAjaxHelper(client.id, client.secret));
+                if (client) {
+                    // TODO: Print id
+
+                    if (client.id) {
+                        // TODO: Print id
+
+                        if (client.secret) {
+                            // TODO: Print id
+
+                            if (!_.includes(context, 'amp')) {
+                                // TODO: Print id
+
+                                head.push(getAjaxHelper(client.id, client.secret));
+                            }
+                        }
+                    }
                 }
             }
 
@@ -178,11 +222,17 @@ module.exports = function ghost_head(options) { // eslint-disable-line camelcase
 
             // no code injection for amp context!!!
             if (!_.includes(context, 'amp')) {
+                // TODO: Print id
+
                 if (!_.isEmpty(globalCodeinjection)) {
+                    // TODO: Print id
+
                     head.push(globalCodeinjection);
                 }
 
                 if (!_.isEmpty(postCodeInjection)) {
+                    // TODO: Print id
+
                     head.push(postCodeInjection);
                 }
             }
