@@ -250,32 +250,136 @@ function urlFor(context, data, absolute) {
 
     // Make data properly optional
     if (_.isBoolean(data)) {
+        // TODO: Print id
+
         absolute = data;
         data = null;
     }
 
     // Can pass 'secure' flag in either context or data arg
-    secure = (context && context.secure) || (data && data.secure);
+    var isContextSecure = context;
+    if (isContextSecure) {
+        // TODO: Print id
 
-    if (_.isObject(context) && context.relativeUrl) {
+        isContextSecure = context.secure;
+    }
+
+    var isDataSecure = data;
+    if (isDataSecure) {
+        // TODO: Print id
+
+        isDataSecure = data.secure;
+    }
+
+    if (isContextSecure) {
+        // TODO: Print id
+
+        secure = isContextSecure;
+    } else {
+        secure = isDataSecure;
+    }
+
+    var isRelative = _.isObject(context);
+    if (isRelative) {
+        // TODO: Print id
+
+        isRelative = context.relativeUrl;
+    }
+
+    var contextIsKnownObject = _.isString(context);
+    if (contextIsKnownObject) {
+        // TODO: Print id
+
+        contextIsKnownObject = _.indexOf(knownObjects, context) !== -1;
+    }
+
+    var isHomeAndAbsolute = context === 'home';
+    if (isHomeAndAbsolute) {
+        // TODO: Print id
+
+        isHomeAndAbsolute = absolute;
+    }
+
+    var contextIsKnownPath = _.isString(context);
+    if (contextIsKnownPath) {
+        // TODO: Print id
+
+        contextIsKnownPath = _.indexOf(_.keys(knownPaths), context) !== -1;
+    }
+
+    if (isRelative) {
+        // TODO: Print id
+
         urlPath = context.relativeUrl;
-    } else if (_.isString(context) && _.indexOf(knownObjects, context) !== -1) {
+    } else if (contextIsKnownObject) {
+        // TODO: Print id
+
+        var isPost = context === 'post';
+        if (isPost) {
+            // TODO: Print id
+
+            isPost = data.post;
+        }
+
+        var isTag = context === 'tag';
+        if (isTag) {
+            // TODO: Print id
+
+            isTag = data.tag;
+        }
+
+        var isAuthor = context === 'author';
+        if (isAuthor) {
+            // TODO: Print id
+
+            isAuthor = data.author;
+        }
+
+        var isImage = context === 'image';
+        if (isImage) {
+            // TODO: Print id
+
+            isImage = data.image;
+        }
+
+        var isNav = context === 'nav';
+        if (isNav) {
+            // TODO: Print id
+
+            isNav = data.nav;
+        }
+
         // trying to create a url for an object
-        if (context === 'post' && data.post) {
+        if (isPost) {
+            // TODO: Print id
+
             urlPath = data.post.url;
             secure = data.secure;
-        } else if (context === 'tag' && data.tag) {
+        } else if (isTag) {
+            // TODO: Print id
+
             urlPath = urlJoin('/', config.get('routeKeywords').tag, data.tag.slug, '/');
             secure = data.tag.secure;
-        } else if (context === 'author' && data.author) {
+        } else if (isAuthor) {
+            // TODO: Print id
+
             urlPath = urlJoin('/', config.get('routeKeywords').author, data.author.slug, '/');
             secure = data.author.secure;
-        } else if (context === 'image' && data.image) {
+        } else if (isImage) {
+            // TODO: Print id
+
             urlPath = data.image;
             imagePathRe = new RegExp('^' + getSubdir() + '/' + STATIC_IMAGE_URL_PREFIX);
-            absolute = imagePathRe.test(data.image) ? absolute : false;
+
+            if (!imagePathRe.test(data.image)) {
+                // TODO: Print id
+
+                absolute = false;
+            }
 
             if (absolute) {
+                // TODO: Print id
+
                 // Remove the sub-directory from the URL because ghostConfig will add it back.
                 urlPath = urlPath.replace(new RegExp('^' + getSubdir()), '');
                 baseUrl = getBlogUrl(secure).replace(/\/$/, '');
@@ -283,66 +387,133 @@ function urlFor(context, data, absolute) {
             }
 
             return urlPath;
-        } else if (context === 'nav' && data.nav) {
+        } else if (isNav) {
+            // TODO: Print id
+
             urlPath = data.nav.url;
-            secure = data.nav.secure || secure;
+
+            if (data.nav.secure) {
+                // TODO: Print id
+
+                secure = data.nav.secure;
+            }
+
             baseUrl = getBlogUrl(secure);
             hostname = baseUrl.split('//')[1];
 
             // If the hostname is present in the url
-            if (urlPath.indexOf(hostname) > -1
+            if (urlPath.indexOf(hostname) > -1) {
+                // TODO: Print id
+
                 // do no not apply, if there is a subdomain, or a mailto link
-                && !urlPath.split(hostname)[0].match(/\.|mailto:/)
-                // do not apply, if there is a port after the hostname
-                && urlPath.split(hostname)[1].substring(0, 1) !== ':') {
-                // make link relative to account for possible mismatch in http/https etc, force absolute
-                urlPath = urlPath.split(hostname)[1];
-                urlPath = urlJoin('/', urlPath);
-                absolute = true;
+                if (!urlPath.split(hostname)[0].match(/\.|mailto:/) {
+                    // TODO: Print id
+
+                    // do not apply, if there is a port after the hostname
+                    if(urlPath.split(hostname)[1].substring(0, 1) !== ':') {
+                        // TODO: Print id
+
+                        // make link relative to account for possible mismatch in http/https etc, force absolute
+                        urlPath = urlPath.split(hostname)[1];
+                        urlPath = urlJoin('/', urlPath);
+                        absolute = true;
+                    }
+                }
             }
         }
-    } else if (context === 'home' && absolute) {
+    } else if (isHomeAndAbsolute) {
+        // TODO: Print id
+
         urlPath = getBlogUrl(secure);
 
         // CASE: there are cases where urlFor('home') needs to be returned without trailing
         // slash e. g. the `{{@blog.url}}` helper. See https://github.com/TryGhost/Ghost/issues/8569
-        if (data && data.trailingSlash === false) {
-            urlPath = urlPath.replace(/\/$/, '');
+        if (data) {
+            // TODO: Print id
+
+            if (data.trailingSlash === false) {
+                // TODO: Print id
+
+                urlPath = urlPath.replace(/\/$/, '');
+            }
         }
     } else if (context === 'admin') {
-        urlPath = getAdminUrl() || getBlogUrl();
+        // TODO: Print id
+
+        if (getAdminUrl()) {
+            // TODO: Print id
+
+            urlPath = getAdminUrl();
+        } else {
+            urlPath = getBlogUrl();
+        }
 
         if (absolute) {
+            // TODO: Print id
+
             urlPath += 'ghost/';
         } else {
             urlPath = '/ghost/';
         }
     } else if (context === 'api') {
-        urlPath = getAdminUrl() || getBlogUrl();
+        // TODO: Print id
+
+        if (getAdminUrl()) {
+            // TODO: Print id
+
+            urlPath = getAdminUrl();
+        } else {
+            urlPath = getBlogUrl();
+        }
 
         // CASE: with or without protocol? If your blog url (or admin url) is configured to http, it's still possible that e.g. nginx allows both https+http.
         // So it depends how you serve your blog. The main focus here is to avoid cors problems.
         // @TODO: rename cors
-        if (data && data.cors) {
-            if (!urlPath.match(/^https:/)) {
-                urlPath = urlPath.replace(/^.*?:\/\//g, '//');
+        if (data) {
+            // TODO: Print id
+
+            if (data.cors) {
+                // TODO: Print id
+
+                if (!urlPath.match(/^https:/)) {
+                    // TODO: Print id
+
+                    urlPath = urlPath.replace(/^.*?:\/\//g, '//');
+                }
             }
         }
 
         if (absolute) {
+            // TODO: Print id
+
             urlPath = urlPath.replace(/\/$/, '') + API_PATH;
         } else {
             urlPath = API_PATH;
         }
-    } else if (_.isString(context) && _.indexOf(_.keys(knownPaths), context) !== -1) {
+    } else if (contextIsKnownPath) {
+        // TODO: Print id
+        
         // trying to create a url for a named path
         urlPath = knownPaths[context];
     }
 
+    var urlPathBool = urlPath.indexOf('://') !== -1;
+    if (!urlPathBool) {
+        // TODO: Print id
+
+        urlPathBool = urlPath.match(/^(\/\/|#|[a-zA-Z0-9\-]+:)/);
+    }
+
     // This url already has a protocol so is likely an external url to be returned
     // or it is an alternative scheme, protocol-less, or an anchor-only path
-    if (urlPath && (urlPath.indexOf('://') !== -1 || urlPath.match(/^(\/\/|#|[a-zA-Z0-9\-]+:)/))) {
-        return urlPath;
+    if (urlPath) {
+        // TODO: Print id
+
+        if (urlPathBool) {
+            // TODO: Print id
+
+            return urlPath;
+        }
     }
 
     return createUrl(urlPath, absolute, secure);
