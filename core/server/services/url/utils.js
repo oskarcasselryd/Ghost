@@ -250,7 +250,7 @@ function urlFor(context, data, absolute) {
 
     // Make data properly optional
     if (_.isBoolean(data)) {
-        // TODO: Print id
+        console.log('Reached branch #1');
 
         absolute = data;
         data = null;
@@ -259,20 +259,20 @@ function urlFor(context, data, absolute) {
     // Can pass 'secure' flag in either context or data arg
     var isContextSecure = context;
     if (isContextSecure) {
-        // TODO: Print id
+        console.log('Reached branch #2');
 
         isContextSecure = context.secure;
     }
 
     var isDataSecure = data;
     if (isDataSecure) {
-        // TODO: Print id
+        console.log('Reached branch #4');
 
         isDataSecure = data.secure;
     }
 
     if (isContextSecure) {
-        // TODO: Print id
+        console.log('Reached branch #3');
 
         secure = isContextSecure;
     } else {
@@ -281,104 +281,104 @@ function urlFor(context, data, absolute) {
 
     var isRelative = _.isObject(context);
     if (isRelative) {
-        // TODO: Print id
+        console.log('Reached branch #5');
 
         isRelative = context.relativeUrl;
     }
 
     var contextIsKnownObject = _.isString(context);
     if (contextIsKnownObject) {
-        // TODO: Print id
+        console.log('Reached branch #7');
 
         contextIsKnownObject = _.indexOf(knownObjects, context) !== -1;
     }
 
     var isHomeAndAbsolute = context === 'home';
     if (isHomeAndAbsolute) {
-        // TODO: Print id
+        console.log('Reached branch #25');
 
         isHomeAndAbsolute = absolute;
     }
 
     var contextIsKnownPath = _.isString(context);
     if (contextIsKnownPath) {
-        // TODO: Print id
+        console.log('Reached branch #38');
 
         contextIsKnownPath = _.indexOf(_.keys(knownPaths), context) !== -1;
     }
 
     if (isRelative) {
-        // TODO: Print id
+        console.log('Reached branch #6');
 
         urlPath = context.relativeUrl;
     } else if (contextIsKnownObject) {
-        // TODO: Print id
+        console.log('Reached branch #8');
 
         var isPost = context === 'post';
         if (isPost) {
-            // TODO: Print id
+            console.log('Reached branch #9');
 
             isPost = data.post;
         }
 
         var isTag = context === 'tag';
         if (isTag) {
-            // TODO: Print id
+            console.log('Reached branch #11');
 
             isTag = data.tag;
         }
 
         var isAuthor = context === 'author';
         if (isAuthor) {
-            // TODO: Print id
+            console.log('Reached branch #13');
 
             isAuthor = data.author;
         }
 
         var isImage = context === 'image';
         if (isImage) {
-            // TODO: Print id
+            console.log('Reached branch #15');
 
             isImage = data.image;
         }
 
         var isNav = context === 'nav';
         if (isNav) {
-            // TODO: Print id
+            console.log('Reached branch #19');
 
             isNav = data.nav;
         }
 
         // trying to create a url for an object
         if (isPost) {
-            // TODO: Print id
+            console.log('Reached branch #10');
 
             urlPath = data.post.url;
             secure = data.secure;
         } else if (isTag) {
-            // TODO: Print id
+            console.log('Reached branch #12');
 
             urlPath = urlJoin('/', config.get('routeKeywords').tag, data.tag.slug, '/');
             secure = data.tag.secure;
         } else if (isAuthor) {
-            // TODO: Print id
+            console.log('Reached branch #14');
 
             urlPath = urlJoin('/', config.get('routeKeywords').author, data.author.slug, '/');
             secure = data.author.secure;
         } else if (isImage) {
-            // TODO: Print id
+            console.log('Reached branch #16');
 
             urlPath = data.image;
             imagePathRe = new RegExp('^' + getSubdir() + '/' + STATIC_IMAGE_URL_PREFIX);
 
             if (!imagePathRe.test(data.image)) {
-                // TODO: Print id
+                console.log('Reached branch #17');
 
                 absolute = false;
             }
 
             if (absolute) {
-                // TODO: Print id
+                console.log('Reached branch #18');
 
                 // Remove the sub-directory from the URL because ghostConfig will add it back.
                 urlPath = urlPath.replace(new RegExp('^' + getSubdir()), '');
@@ -388,12 +388,12 @@ function urlFor(context, data, absolute) {
 
             return urlPath;
         } else if (isNav) {
-            // TODO: Print id
+            console.log('Reached branch #20');
 
             urlPath = data.nav.url;
 
             if (data.nav.secure) {
-                // TODO: Print id
+                console.log('Reached branch #21');
 
                 secure = data.nav.secure;
             }
@@ -403,15 +403,15 @@ function urlFor(context, data, absolute) {
 
             // If the hostname is present in the url
             if (urlPath.indexOf(hostname) > -1) {
-                // TODO: Print id
+                console.log('Reached branch #22');
 
                 // do no not apply, if there is a subdomain, or a mailto link
-                if (!urlPath.split(hostname)[0].match(/\.|mailto:/) {
-                    // TODO: Print id
+                if (!urlPath.split(hostname)[0].match(/\.|mailto:/)) {
+                    console.log('Reached branch #23');
 
                     // do not apply, if there is a port after the hostname
                     if(urlPath.split(hostname)[1].substring(0, 1) !== ':') {
-                        // TODO: Print id
+                        console.log('Reached branch #24');
 
                         // make link relative to account for possible mismatch in http/https etc, force absolute
                         urlPath = urlPath.split(hostname)[1];
@@ -422,26 +422,26 @@ function urlFor(context, data, absolute) {
             }
         }
     } else if (isHomeAndAbsolute) {
-        // TODO: Print id
+        console.log('Reached branch #26');
 
         urlPath = getBlogUrl(secure);
 
         // CASE: there are cases where urlFor('home') needs to be returned without trailing
         // slash e. g. the `{{@blog.url}}` helper. See https://github.com/TryGhost/Ghost/issues/8569
         if (data) {
-            // TODO: Print id
+            console.log('Reached branch #27');
 
             if (data.trailingSlash === false) {
-                // TODO: Print id
+                console.log('Reached branch #28');
 
                 urlPath = urlPath.replace(/\/$/, '');
             }
         }
     } else if (context === 'admin') {
-        // TODO: Print id
+        console.log('Reached branch #29');
 
         if (getAdminUrl()) {
-            // TODO: Print id
+            console.log('Reached branch #30');
 
             urlPath = getAdminUrl();
         } else {
@@ -449,17 +449,17 @@ function urlFor(context, data, absolute) {
         }
 
         if (absolute) {
-            // TODO: Print id
+            console.log('Reached branch #31');
 
             urlPath += 'ghost/';
         } else {
             urlPath = '/ghost/';
         }
     } else if (context === 'api') {
-        // TODO: Print id
+        console.log('Reached branch #32');
 
         if (getAdminUrl()) {
-            // TODO: Print id
+            console.log('Reached branch #33');
 
             urlPath = getAdminUrl();
         } else {
@@ -470,13 +470,13 @@ function urlFor(context, data, absolute) {
         // So it depends how you serve your blog. The main focus here is to avoid cors problems.
         // @TODO: rename cors
         if (data) {
-            // TODO: Print id
+            console.log('Reached branch #34');
 
             if (data.cors) {
-                // TODO: Print id
+                console.log('Reached branch #35');
 
                 if (!urlPath.match(/^https:/)) {
-                    // TODO: Print id
+                    console.log('Reached branch #36');
 
                     urlPath = urlPath.replace(/^.*?:\/\//g, '//');
                 }
@@ -484,33 +484,33 @@ function urlFor(context, data, absolute) {
         }
 
         if (absolute) {
-            // TODO: Print id
+            console.log('Reached branch #37');
 
             urlPath = urlPath.replace(/\/$/, '') + API_PATH;
         } else {
             urlPath = API_PATH;
         }
     } else if (contextIsKnownPath) {
-        // TODO: Print id
-        
+        console.log('Reached branch #39');
+
         // trying to create a url for a named path
         urlPath = knownPaths[context];
     }
 
     var urlPathBool = urlPath.indexOf('://') !== -1;
-    if (!urlPathBool) {
-        // TODO: Print id
-
+    if (urlPathBool) {
+        console.log('Reached branch #41');
+    } else {
         urlPathBool = urlPath.match(/^(\/\/|#|[a-zA-Z0-9\-]+:)/);
     }
 
     // This url already has a protocol so is likely an external url to be returned
     // or it is an alternative scheme, protocol-less, or an anchor-only path
     if (urlPath) {
-        // TODO: Print id
+        console.log('Reached branch #40');
 
         if (urlPathBool) {
-            // TODO: Print id
+            console.log('Reached branch #42');
 
             return urlPath;
         }
