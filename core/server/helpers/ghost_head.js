@@ -126,14 +126,14 @@ module.exports = function ghost_head(options) { // eslint-disable-line camelcase
             debug('end fetch');
 
             if (context) {
-                // TODO: Print id
+                console.log('Reached branch #1');
 
                 // head is our main array that holds our meta data
                 if (metaData.metaDescription) {
-                    // TODO: Print id
+                    console.log('Reached branch #2');
 
                     if (metaData.metaDescription.length > 0) {
-                        // TODO: Print id
+                        console.log('Reached branch #3');
 
                         head.push('<meta name="description" content="' + escapeExpression(metaData.metaDescription) + '" />');
                     }
@@ -146,13 +146,13 @@ module.exports = function ghost_head(options) { // eslint-disable-line camelcase
 
                 // show amp link in post when 1. we are not on the amp page and 2. amp is enabled
                 if (_.includes(context, 'post')) {
-                    // TODO: Print id
+                    console.log('Reached branch #4');
 
                     if (!_.includes(context, 'amp')) {
-                        // TODO: Print id
+                        console.log('Reached branch #5');
 
                         if (settingsCache.get('amp')) {
-                            // TODO: Print id
+                            console.log('Reached branch #6');
 
                             head.push('<link rel="amphtml" href="' +
                                 escapeExpression(metaData.ampUrl) + '" />');
@@ -161,31 +161,31 @@ module.exports = function ghost_head(options) { // eslint-disable-line camelcase
                 }
 
                 if (metaData.previousUrl) {
-                    // TODO: Print id
+                    console.log('Reached branch #7');
 
                     head.push('<link rel="prev" href="' +
                         escapeExpression(metaData.previousUrl) + '" />');
                 }
 
                 if (metaData.nextUrl) {
-                    // TODO: Print id
+                    console.log('Reached branch #8');
 
                     head.push('<link rel="next" href="' +
                         escapeExpression(metaData.nextUrl) + '" />');
                 }
 
                 if (!_.includes(context, 'paged')) {
-                    // TODO: Print id
+                    console.log('Reached branch #9');
 
                     if (useStructuredData) {
-                        // TODO: Print id
+                        console.log('Reached branch #10');
 
                         head.push('');
                         head.push.apply(head, finaliseStructuredData(metaData));
                         head.push('');
 
                         if (metaData.schema) {
-                            // TODO: Print id
+                            console.log('Reached branch #11');
 
                             head.push('<script type="application/ld+json">\n' +
                                 JSON.stringify(metaData.schema, null, '    ') +
@@ -195,16 +195,16 @@ module.exports = function ghost_head(options) { // eslint-disable-line camelcase
                 }
 
                 if (client) {
-                    // TODO: Print id
+                    console.log('Reached branch #12');
 
                     if (client.id) {
-                        // TODO: Print id
+                        console.log('Reached branch #13');
 
                         if (client.secret) {
-                            // TODO: Print id
+                            console.log('Reached branch #14');
 
                             if (!_.includes(context, 'amp')) {
-                                // TODO: Print id
+                                console.log('Reached branch #15');
 
                                 head.push(getAjaxHelper(client.id, client.secret));
                             }
@@ -222,16 +222,16 @@ module.exports = function ghost_head(options) { // eslint-disable-line camelcase
 
             // no code injection for amp context!!!
             if (!_.includes(context, 'amp')) {
-                // TODO: Print id
+                console.log('Reached branch #16');
 
                 if (!_.isEmpty(globalCodeinjection)) {
-                    // TODO: Print id
+                    console.log('Reached branch #17');
 
                     head.push(globalCodeinjection);
                 }
 
                 if (!_.isEmpty(postCodeInjection)) {
-                    // TODO: Print id
+                    console.log('Reached branch #18');
 
                     head.push(postCodeInjection);
                 }
