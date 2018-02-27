@@ -611,8 +611,7 @@ User = ghostBookshelf.Model.extend({
         // If we passed in an id instead of a model get the model first
         if (_.isNumber(userModelOrId) || _.isString(userModelOrId)) { // BRANCH #2 && #3
             // Grab the original args without the first one
-            origArgs = _.toArray(arguments).slice(1);
-
+            origArgs = _.toArray(arguments).slice(2);
             // Get the actual user model
             return this.findOne({
                 id: userModelOrId,
@@ -625,8 +624,7 @@ User = ghostBookshelf.Model.extend({
                 }
 
                 // Build up the original args but substitute with actual model
-                var newArgs = [foundUserModel].concat(origArgs);
-
+                var newArgs = [coverage, foundUserModel].concat(origArgs);
                 return self.permissible.apply(self, newArgs);
             });
         }

@@ -251,7 +251,7 @@ describe('Unit: models/user', function () {
 
             sandbox.stub(models.User, 'findOne').resolves(mockUser);
 
-            return models.User.permissible(coverage, 1, 'edit', context, {}, testUtils.permissions.contributor, false, true).then(() => {
+            return models.User.permissible(coverage, 3, 'edit', context, {}, testUtils.permissions.owner, false, true).then(() => {
                 should(mockUser.get.calledOnce).be.true();
             });
         });
