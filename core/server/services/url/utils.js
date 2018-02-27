@@ -272,10 +272,10 @@ function urlFor(context, data, absolute) {
     }
 
     if (isContextSecure) {
-        console.log('UrlFor - Reached branch #3');
-
         secure = isContextSecure;
     } else {
+        console.log('UrlFor - Reached branch #3');
+        
         secure = isDataSecure;
     }
 
