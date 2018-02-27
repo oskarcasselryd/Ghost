@@ -7,9 +7,32 @@ var should = require('should'), // jshint ignore:line
     sandbox = sinon.sandbox.create();
 
 describe('Models: Post', function () {
+    let numberOfBranches = 32,
+        coverage = new Array(numberOfBranches);
+
     before(function () {
         models.init();
+        for(let i=0;i<numberOfBranches;++i) {
+            coverage[i] = false;
+        }
     });
+
+    after(function() {
+        let nbReached = 0;
+        console.log("Coverage details : ")
+        for(let i=0;i<numberOfBranches;++i) {
+            console.log('Branch ' + i + ' => ' + coverage[i]);
+        }
+        console.log("\nBranch not reached : ")
+        for(let i=0;i<numberOfBranches;++i) {
+            if(!coverage[i]) {
+                console.log('Branch ' + i);
+            } else {
+                nbReached++;
+            }
+        }
+        console.log("\nThe code is covered at " + (nbReached/numberOfBranches*100.0).toFixed(3) + "%")
+    })
 
     describe('Permissible', function () {
         describe('As Contributor', function () {
@@ -25,6 +48,7 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'edit',
                         context,
@@ -52,6 +76,7 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'edit',
                         context,
@@ -79,6 +104,7 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'edit',
                         context,
@@ -106,6 +132,7 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(2);
 
                     models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'edit',
                         context,
@@ -133,6 +160,7 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     return models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'edit',
                         context,
@@ -157,6 +185,7 @@ describe('Models: Post', function () {
                         unsafeAttrs = {status: 'published', author_id: 1};
 
                     models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'add',
                         context,
@@ -181,6 +210,7 @@ describe('Models: Post', function () {
                         unsafeAttrs = {status: 'draft', author_id: 2};
 
                     models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'add',
                         context,
@@ -205,6 +235,7 @@ describe('Models: Post', function () {
                         unsafeAttrs = {status: 'draft', author_id: 1};
 
                     return models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'add',
                         context,
@@ -230,6 +261,7 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(2);
 
                     models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'destroy',
                         context,
@@ -256,6 +288,7 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('status').returns('published');
 
                     models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'destroy',
                         context,
@@ -282,6 +315,7 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     return models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'destroy',
                         context,
@@ -310,6 +344,7 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(2);
 
                     models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'edit',
                         context,
@@ -336,6 +371,7 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'edit',
                         context,
@@ -362,6 +398,7 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     return models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'edit',
                         context,
@@ -384,6 +421,7 @@ describe('Models: Post', function () {
                         unsafeAttrs = {author_id: 2};
 
                     models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'add',
                         context,
@@ -408,6 +446,7 @@ describe('Models: Post', function () {
                         unsafeAttrs = {author_id: 1};
 
                     return models.Post.permissible(
+                        coverage,
                         mockPostObj,
                         'add',
                         context,
@@ -433,6 +472,7 @@ describe('Models: Post', function () {
                 mockPostObj.get.withArgs('author_id').returns(2);
 
                 models.Post.permissible(
+                    coverage,
                     mockPostObj,
                     'edit',
                     context,
@@ -459,6 +499,7 @@ describe('Models: Post', function () {
                 mockPostObj.get.withArgs('author_id').returns(2);
 
                 return models.Post.permissible(
+                    coverage,
                     mockPostObj,
                     'edit',
                     context,
@@ -468,6 +509,56 @@ describe('Models: Post', function () {
                     true
                 ).then(() => {
                     should(mockPostObj.get.called).be.false();
+                });
+            });
+        });
+
+        describe('findOne', function () {
+            it('converts string id to post model then resolves if hasUserPermission is true', function () {
+                var mockPostObj = {
+                        get: sandbox.stub()
+                    },
+                    context = {user: 1},
+                    unsafeAttrs = {author_id: 2};
+
+                sandbox.stub(models.Post, 'findOne').resolves(mockPostObj);
+
+                return models.Post.permissible(
+                    coverage,
+                    '1',
+                    'edit',
+                    context,
+                    unsafeAttrs,
+                    utils.permissions.editor,
+                    true,
+                    true
+                ).then(() => {
+                    should(mockPostObj.get.called).be.false();
+                    sandbox.restore();
+                });
+            });
+
+            it('converts number id to post model then resolves if hasUserPermission is true', function () {
+                var mockPostObj = {
+                        get: sandbox.stub()
+                    },
+                    context = {user: 1},
+                    unsafeAttrs = {author_id: 2};
+
+                sandbox.stub(models.Post, 'findOne').resolves(mockPostObj);
+
+                return models.Post.permissible(
+                    coverage,
+                    1,
+                    'edit',
+                    context,
+                    unsafeAttrs,
+                    utils.permissions.editor,
+                    true,
+                    true
+                ).then(() => {
+                    should(mockPostObj.get.called).be.false();
+                    sandbox.restore();
                 });
             });
         });
