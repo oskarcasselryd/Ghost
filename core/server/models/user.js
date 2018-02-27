@@ -581,17 +581,19 @@ User = ghostBookshelf.Model.extend({
         });
     },
 
-    permissible: function permissible(coverage, userModelOrId, action, context, unsafeAttrs, loadedPermissions, hasUserPermission, hasAppPermission) {
+    permissible: function permissible(userModelOrId, action, context, unsafeAttrs, loadedPermissions, hasUserPermission, hasAppPermission, coverage = undefined) {
         var self = this,
             userModel = userModelOrId,
             origArgs;
 
         // ------------ COVERAGE ------------
-        if (_.isObject(userModelOrId)) { // BRANCH #0
-            coverage[0] = true;
-        }
-        if(_.isObject(userModelOrId) && !_.isObject(userModelOrId.related('roles'))) { // BRANCH #1
-            coverage[1] = true;
+        if(coverage) {
+            if (_.isObject(userModelOrId)) { // BRANCH #0
+                coverage[0] = true;
+            }
+            if(_.isObject(userModelOrId) && !_.isObject(userModelOrId.related('roles'))) { // BRANCH #1
+                coverage[1] = true;
+            }
         }
         // ---------------------------------
 
@@ -601,11 +603,13 @@ User = ghostBookshelf.Model.extend({
         }
 
         // ------------ COVERAGE ------------
-        if (_.isNumber(userModelOrId)) { // BRANCH #2
-            coverage[2] = true;
-        }
-        if(_.isString(userModelOrId)) { // BRANCH #3
-            coverage[3] = true;;
+        if(coverage) {
+            if (_.isNumber(userModelOrId)) { // BRANCH #2
+                coverage[2] = true;
+            }
+            if(_.isString(userModelOrId)) { // BRANCH #3
+                coverage[3] = true;;
+            }
         }
         // ---------------------------------
         // If we passed in an id instead of a model get the model first
@@ -624,14 +628,18 @@ User = ghostBookshelf.Model.extend({
                 }
 
                 // Build up the original args but substitute with actual model
-                var newArgs = [coverage, foundUserModel].concat(origArgs);
+                var newArgs = [foundUserModel].concat(origArgs);
+                newArgs = newArgs.concat([coverage]);
+
                 return self.permissible.apply(self, newArgs);
             });
         }
 
         // ------------ COVERAGE ------------
-        if (action === 'edit') { // BRANCH #4
-            coverage[4] = true;
+        if(coverage) {
+            if (action === 'edit') { // BRANCH #4
+                coverage[4] = true;
+            }
         }
         // ---------------------------------
         if (action === 'edit') { // BRANCH #4
@@ -639,26 +647,30 @@ User = ghostBookshelf.Model.extend({
             // We now have all the info we need to construct the permissions
 
             // ------------ COVERAGE ------------
-            if (loadedPermissions.user) { // BRANCH #6
-                coverage[6] = true;
-            }
-            if (userModel.hasRole('Owner')) { // BRANCH #7
-                coverage[7] = true;
-            }
-            if (_.some(loadedPermissions.user.roles, {name: 'Owner'})) { // BRANCH #8
-                coverage[8] = true;
-            }
-            if (loadedPermissions.user) { // BRANCH #9
-                coverage[9] = true;
-            }
-            if (_.some(loadedPermissions.user.roles, {name: 'Editor'})) { // BRANCH #10
-                coverage[10] = true;
+            if(coverage) {
+                if (loadedPermissions.user) { // BRANCH #6
+                    coverage[6] = true;
+                }
+                if (userModel.hasRole('Owner')) { // BRANCH #7
+                    coverage[7] = true;
+                }
+                if (_.some(loadedPermissions.user.roles, {name: 'Owner'})) { // BRANCH #8
+                    coverage[8] = true;
+                }
+                if (loadedPermissions.user) { // BRANCH #9
+                    coverage[9] = true;
+                }
+                if (_.some(loadedPermissions.user.roles, {name: 'Editor'})) { // BRANCH #10
+                    coverage[10] = true;
+                }
             }
             // ---------------------------------
             if (context.user === userModel.get('id')) { // BRANCH #5
                 // If this is the same user that requests the operation allow it.
                 // ------------ COVERAGE ------------
-                coverage[5] = true; // BRANCH #5
+                if(coverage) {
+                    coverage[5] = true; // BRANCH #5
+                }
                 // ---------------------------------
                 hasUserPermission = true;
             } else if (loadedPermissions.user && userModel.hasRole('Owner')) { // BRANCH #6 && #7
@@ -667,11 +679,13 @@ User = ghostBookshelf.Model.extend({
             } else if (loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Editor'})) { // BRANCH #9 && #10
                 // If the user we are trying to edit is an Author or Contributor, allow it
                 // ------------ COVERAGE ------------
-                if (userModel.hasRole('Author')) { // BRANCH #11
-                    coverage[11] = true;
-                }
-                if (userModel.hasRole('Contributor')) { // BRANCH #12
-                    coverage[12] = true;
+                if(coverage) {
+                    if (userModel.hasRole('Author')) { // BRANCH #11
+                        coverage[11] = true;
+                    }
+                    if (userModel.hasRole('Contributor')) { // BRANCH #12
+                        coverage[12] = true;
+                    }
                 }
                 // ---------------------------------
                 hasUserPermission = userModel.hasRole('Author') || userModel.hasRole('Contributor'); // BRANCH #11 && 12
@@ -679,25 +693,31 @@ User = ghostBookshelf.Model.extend({
         }
 
         // ------------ COVERAGE ------------
-        if (action === 'destroy') { // BRANCH #13
-            coverage[13] = true;
+        if(coverage) {
+            if (action === 'destroy') { // BRANCH #13
+                coverage[13] = true;
+            }
         }
         // ---------------------------------
         if (action === 'destroy') { // BRANCH #13
             // Owner cannot be deleted EVER
             if (userModel.hasRole('Owner')) { // BRANCH #14
                 // ------------ COVERAGE ------------
-                coverage[14] = true;
+                if(coverage) {
+                    coverage[14] = true;
+                }
                 // ---------------------------------
                 return Promise.reject(new common.errors.NoPermissionError({message: common.i18n.t('errors.models.user.notEnoughPermission')}));
             }
 
             // ------------ COVERAGE ------------
-            if (loadedPermissions.user) { // BRANCH #15
-                coverage[15] = true;
-            }
-            if (_.some(loadedPermissions.user.roles, {name: 'Editor'})) { // BRANCH #16
-                coverage[16] = true;
+            if(coverage) {
+                if (loadedPermissions.user) { // BRANCH #15
+                    coverage[15] = true;
+                }
+                if (_.some(loadedPermissions.user.roles, {name: 'Editor'})) { // BRANCH #16
+                    coverage[16] = true;
+                }
             }
             // ---------------------------------
 
@@ -706,26 +726,30 @@ User = ghostBookshelf.Model.extend({
                 // Alternatively, if the user we are trying to edit is an Author, allow it
                 hasUserPermission = context.user === userModel.get('id') || userModel.hasRole('Author') || userModel.hasRole('Contributor'); // BRANCH #17 && #18 && #19
                 // ------------ COVERAGE ------------
-                // HACK because it's failed
-                if (hasUserPermission && !userModel.hasRole('Author') && !userModel.hasRole('Contributor')) { // BRANCH #17
-                    coverage[17] = true;
-                }
-                if (userModel.hasRole('Author')) { // BRANCH #18
-                    coverage[18] = true;
-                }
-                if (userModel.hasRole('Contributor')) { // BRANCH #19
-                    coverage[19] = true;
+                if(coverage) {
+                    // HACK because it's failed
+                    if (hasUserPermission && !userModel.hasRole('Author') && !userModel.hasRole('Contributor')) { // BRANCH #17
+                        coverage[17] = true;
+                    }
+                    if (userModel.hasRole('Author')) { // BRANCH #18
+                        coverage[18] = true;
+                    }
+                    if (userModel.hasRole('Contributor')) { // BRANCH #19
+                        coverage[19] = true;
+                    }
                 }
                 // ---------------------------------
             }
         }
 
         // ------------ COVERAGE ------------
-        if (hasUserPermission) { // BRANCH #20
-            coverage[20] = true;
-        }
-        if (hasAppPermission) { // BRANCH #21
-            coverage[21] = true;
+        if(coverage) {
+            if (hasUserPermission) { // BRANCH #20
+                coverage[20] = true;
+            }
+            if (hasAppPermission) { // BRANCH #21
+                coverage[21] = true;
+            }
         }
         // ---------------------------------
         if (hasUserPermission && hasAppPermission) {  // BRANCH #20 && 21
