@@ -5,8 +5,8 @@ describe('getMetaDescription', function () {
     var coverage;
 
     before(function() {
-        coverage = new Array(21); // 21 branches
-        for(let i=0; i<21; i++) {
+        coverage = new Array(20); // 21 branches
+        for(let i=0; i<20; i++) {
             coverage[i] = false;
         }
 
@@ -14,7 +14,7 @@ describe('getMetaDescription', function () {
 
     after(function() {
         var allCovered = true;
-        for(let i=0; i<21; i++) {
+        for(let i=0; i<20; i++) {
             if (coverage[i] == false) {
                 allCovered = false;
                 console.log("Did not reach branch #" + i);
@@ -53,6 +53,13 @@ describe('getMetaDescription', function () {
         description.should.equal('');
     });
 
+    it('should not return meta description for author if on root context contains author and no meta description provided', function () {
+        var description = getMetaDescription({}, {
+            context: ['author']
+        }, undefined, coverage);
+        description.should.equal('');
+    });
+
     it('should return meta description for author if on root context contains author and meta description provided', function () {
         var description = getMetaDescription({
             author: {
@@ -83,6 +90,13 @@ describe('getMetaDescription', function () {
                 description: 'The normal description'
             }
         }, {
+            context: ['tag']
+        }, undefined, coverage);
+        description.should.equal('');
+    });
+
+    it('should not return data tag description if no meta description for tag', function () {
+        var description = getMetaDescription({}, {
             context: ['tag']
         }, undefined, coverage);
         description.should.equal('');
@@ -161,5 +175,12 @@ describe('getMetaDescription', function () {
             context: ['page']
         }, undefined, coverage);
         description.should.equal('Best page ever!');
+    });
+
+    it('should not return data post meta description if on root context contains page', function () {
+        var description = getMetaDescription({}, {
+            context: ['page']
+        }, undefined, coverage);
+        description.should.equal('');
     });
 });
