@@ -590,7 +590,7 @@ User = ghostBookshelf.Model.extend({
         if (_.isObject(userModelOrId)) { // BRANCH #0
             coverage[0] = true;
         }
-        if(!_.isObject(userModelOrId.related('roles'))) { // BRANCH #1
+        if(_.isObject(userModelOrId) && !_.isObject(userModelOrId.related('roles'))) { // BRANCH #1
             coverage[1] = true;
         }
         // ---------------------------------
