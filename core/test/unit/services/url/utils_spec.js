@@ -118,124 +118,124 @@ describe('Url', function () {
                     ++branchesReached;
                 }
             }
-            console.log('\nThe code is covered at ' + (branchesReached / NUMBER_OF_BRANCHES * 100.0).toFixed(3) + '%');
+            console.log('\nThe code is covered at ' + (branchesReached / NUMBER_OF_BRANCHES * 100.0).toFixed(3) + '%\n');
         });
 
         it('should return the home url with no options', function () {
-            urlService.utils.urlFor(coverage).should.equal('/');
+            urlService.utils.urlFor(undefined, undefined, undefined, coverage).should.equal('/');
             configUtils.set({url: 'http://my-ghost-blog.com/blog'});
-            urlService.utils.urlFor(coverage).should.equal('/blog/');
+            urlService.utils.urlFor(undefined, undefined, undefined, coverage).should.equal('/blog/');
             configUtils.set({url: 'http://my-ghost-blog.com/blog/'});
-            urlService.utils.urlFor(coverage).should.equal('/blog/');
+            urlService.utils.urlFor(undefined, undefined, undefined, coverage).should.equal('/blog/');
         });
 
         it('should return home url when asked for', function () {
             var testContext = 'home';
 
             configUtils.set({url: 'http://my-ghost-blog.com'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/');
-            urlService.utils.urlFor(coverage, testContext, {secure: true}, true).should.equal('https://my-ghost-blog.com/');
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/');
+            urlService.utils.urlFor(testContext, {secure: true}, true, coverage).should.equal('https://my-ghost-blog.com/');
 
             configUtils.set({url: 'http://my-ghost-blog.com/'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/');
-            urlService.utils.urlFor(coverage, testContext, {secure: true}, true).should.equal('https://my-ghost-blog.com/');
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/');
+            urlService.utils.urlFor(testContext, {secure: true}, true, coverage).should.equal('https://my-ghost-blog.com/');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/blog/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/blog/');
-            urlService.utils.urlFor(coverage, testContext, {secure: true}, true).should.equal('https://my-ghost-blog.com/blog/');
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/blog/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/');
+            urlService.utils.urlFor(testContext, {secure: true}, true, coverage).should.equal('https://my-ghost-blog.com/blog/');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog/'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/blog/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/blog/');
-            urlService.utils.urlFor(coverage, testContext, {secure: true}, true).should.equal('https://my-ghost-blog.com/blog/');
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/blog/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/');
+            urlService.utils.urlFor(testContext, {secure: true}, true, coverage).should.equal('https://my-ghost-blog.com/blog/');
 
             // Output blog url without trailing slash
             configUtils.set({url: 'http://my-ghost-blog.com'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/');
-            urlService.utils.urlFor(coverage, testContext, {
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/');
+            urlService.utils.urlFor(testContext, {
                 secure: true,
                 trailingSlash: false
-            }, true).should.equal('https://my-ghost-blog.com');
+            }, true, coverage).should.equal('https://my-ghost-blog.com');
 
             configUtils.set({url: 'http://my-ghost-blog.com/'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/');
-            urlService.utils.urlFor(coverage, testContext, {
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/');
+            urlService.utils.urlFor(testContext, {
                 secure: true,
                 trailingSlash: false
-            }, true).should.equal('https://my-ghost-blog.com');
+            }, true, coverage).should.equal('https://my-ghost-blog.com');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/blog/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/blog/');
-            urlService.utils.urlFor(coverage, testContext, {
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/blog/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/');
+            urlService.utils.urlFor(testContext, {
                 secure: true,
                 trailingSlash: false
-            }, true).should.equal('https://my-ghost-blog.com/blog');
+            }, true, coverage).should.equal('https://my-ghost-blog.com/blog');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog/'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/blog/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/blog/');
-            urlService.utils.urlFor(coverage, testContext, {
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/blog/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/');
+            urlService.utils.urlFor(testContext, {
                 secure: true,
                 trailingSlash: false
-            }, true).should.equal('https://my-ghost-blog.com/blog');
+            }, true, coverage).should.equal('https://my-ghost-blog.com/blog');
         });
 
         it('should return rss url when asked for', function () {
             var testContext = 'rss';
 
             configUtils.set({url: 'http://my-ghost-blog.com'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/rss/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/rss/');
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/rss/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/rss/');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/blog/rss/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/blog/rss/');
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/blog/rss/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/rss/');
         });
 
         it('should handle weird cases by always returning /', function () {
-            urlService.utils.urlFor(coverage, '').should.equal('/');
-            urlService.utils.urlFor(coverage, 'post', {}).should.equal('/');
-            urlService.utils.urlFor(coverage, 'post', {post: {}}).should.equal('/');
-            urlService.utils.urlFor(coverage, null).should.equal('/');
-            urlService.utils.urlFor(coverage, undefined).should.equal('/');
-            urlService.utils.urlFor(coverage, {}).should.equal('/');
-            urlService.utils.urlFor(coverage, {relativeUrl: ''}).should.equal('/');
-            urlService.utils.urlFor(coverage, {relativeUrl: null}).should.equal('/');
-            urlService.utils.urlFor(coverage, {relativeUrl: undefined}).should.equal('/');
+            urlService.utils.urlFor('', undefined, undefined, coverage).should.equal('/');
+            urlService.utils.urlFor('post', {}, undefined, coverage).should.equal('/');
+            urlService.utils.urlFor('post', {post: {}}, undefined, coverage).should.equal('/');
+            urlService.utils.urlFor(null, undefined, undefined, coverage).should.equal('/');
+            urlService.utils.urlFor(undefined, undefined, undefined, coverage).should.equal('/');
+            urlService.utils.urlFor(undefined, {}, undefined, coverage).should.equal('/');
+            urlService.utils.urlFor(undefined, {relativeUrl: ''}, undefined, coverage).should.equal('/');
+            urlService.utils.urlFor(undefined, {relativeUrl: null}, undefined, coverage).should.equal('/');
+            urlService.utils.urlFor(undefined, {relativeUrl: undefined}, undefined, coverage).should.equal('/');
         });
 
         it('should return url for a random path when asked for', function () {
             var testContext = {relativeUrl: '/about/'};
 
             configUtils.set({url: 'http://my-ghost-blog.com'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/about/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/about/');
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/about/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/about/');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/blog/about/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/blog/about/');
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/blog/about/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/about/');
         });
 
         it('should deduplicate subdirectories in paths', function () {
             var testContext = {relativeUrl: '/blog/about/'};
 
             configUtils.set({url: 'http://my-ghost-blog.com'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/blog/about/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/blog/about/');
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/blog/about/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/about/');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/blog/about/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/blog/about/');
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/blog/about/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/about/');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog/'});
-            urlService.utils.urlFor(coverage, testContext).should.equal('/blog/about/');
-            urlService.utils.urlFor(coverage, testContext, true).should.equal('http://my-ghost-blog.com/blog/about/');
+            urlService.utils.urlFor(testContext, undefined, undefined, coverage).should.equal('/blog/about/');
+            urlService.utils.urlFor(testContext, true, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/about/');
         });
 
         it('should return url for a post from post object', function () {
@@ -245,16 +245,16 @@ describe('Url', function () {
             // url is now provided on the postmodel, permalinkSetting tests are in the model_post_spec.js test
             testData.post.url = '/short-and-sweet/';
             configUtils.set({url: 'http://my-ghost-blog.com'});
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('/short-and-sweet/');
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('http://my-ghost-blog.com/short-and-sweet/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('/short-and-sweet/');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('http://my-ghost-blog.com/short-and-sweet/');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog'});
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('/blog/short-and-sweet/');
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('http://my-ghost-blog.com/blog/short-and-sweet/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('/blog/short-and-sweet/');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('http://my-ghost-blog.com/blog/short-and-sweet/');
 
             testData.post.url = '/blog-one/';
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('/blog/blog-one/');
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('http://my-ghost-blog.com/blog/blog-one/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('/blog/blog-one/');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('http://my-ghost-blog.com/blog/blog-one/');
         });
 
         it('should return url for a tag when asked for', function () {
@@ -262,12 +262,12 @@ describe('Url', function () {
                 testData = {tag: testUtils.DataGenerator.Content.tags[0]};
 
             configUtils.set({url: 'http://my-ghost-blog.com'});
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('/tag/kitchen-sink/');
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('http://my-ghost-blog.com/tag/kitchen-sink/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('/tag/kitchen-sink/');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('http://my-ghost-blog.com/tag/kitchen-sink/');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog'});
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('/blog/tag/kitchen-sink/');
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('http://my-ghost-blog.com/blog/tag/kitchen-sink/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('/blog/tag/kitchen-sink/');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('http://my-ghost-blog.com/blog/tag/kitchen-sink/');
         });
 
         it('should return url for an author when asked for', function () {
@@ -275,12 +275,12 @@ describe('Url', function () {
                 testData = {author: testUtils.DataGenerator.Content.users[0]};
 
             configUtils.set({url: 'http://my-ghost-blog.com'});
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('/author/joe-bloggs/');
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('http://my-ghost-blog.com/author/joe-bloggs/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('/author/joe-bloggs/');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('http://my-ghost-blog.com/author/joe-bloggs/');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog'});
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('/blog/author/joe-bloggs/');
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('http://my-ghost-blog.com/blog/author/joe-bloggs/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('/blog/author/joe-bloggs/');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('http://my-ghost-blog.com/blog/author/joe-bloggs/');
         });
 
         it('should return url for an image when asked for', function () {
@@ -290,34 +290,34 @@ describe('Url', function () {
             configUtils.set({url: 'http://my-ghost-blog.com'});
 
             testData = {image: '/content/images/my-image.jpg'};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('/content/images/my-image.jpg');
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('http://my-ghost-blog.com/content/images/my-image.jpg');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('/content/images/my-image.jpg');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('http://my-ghost-blog.com/content/images/my-image.jpg');
 
             testData = {image: 'http://placekitten.com/500/200'};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://placekitten.com/500/200');
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('http://placekitten.com/500/200');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://placekitten.com/500/200');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('http://placekitten.com/500/200');
 
             testData = {image: '/blog/content/images/my-image2.jpg'};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('/blog/content/images/my-image2.jpg');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('/blog/content/images/my-image2.jpg');
             // We don't make image urls absolute if they don't look like images relative to the image path
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('/blog/content/images/my-image2.jpg');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('/blog/content/images/my-image2.jpg');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog/'});
 
             testData = {image: '/content/images/my-image3.jpg'};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('/content/images/my-image3.jpg');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('/content/images/my-image3.jpg');
             // We don't make image urls absolute if they don't look like images relative to the image path
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('/content/images/my-image3.jpg');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('/content/images/my-image3.jpg');
 
             testData = {image: '/blog/content/images/my-image4.jpg'};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('/blog/content/images/my-image4.jpg');
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('http://my-ghost-blog.com/blog/content/images/my-image4.jpg');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('/blog/content/images/my-image4.jpg');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('http://my-ghost-blog.com/blog/content/images/my-image4.jpg');
 
             // Test case for blogs with optional https -
             // they may be configured with http url but the actual connection may be over https (#8373)
             configUtils.set({url: 'http://my-ghost-blog.com'});
             testData = {image: '/content/images/my-image.jpg', secure: true};
-            urlService.utils.urlFor(coverage, testContext, testData, true).should.equal('https://my-ghost-blog.com/content/images/my-image.jpg');
+            urlService.utils.urlFor(testContext, testData, true, coverage).should.equal('https://my-ghost-blog.com/content/images/my-image.jpg');
         });
 
         it('should return a url for a nav item when asked for it', function () {
@@ -327,65 +327,65 @@ describe('Url', function () {
             configUtils.set({url: 'http://my-ghost-blog.com'});
 
             testData = {nav: {url: 'http://my-ghost-blog.com/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://my-ghost-blog.com/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://my-ghost-blog.com/');
 
             testData = {nav: {url: 'http://my-ghost-blog.com/short-and-sweet/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://my-ghost-blog.com/short-and-sweet/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://my-ghost-blog.com/short-and-sweet/');
 
             testData = {nav: {url: 'http://my-ghost-blog.com//short-and-sweet/'}, secure: true};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('https://my-ghost-blog.com/short-and-sweet/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('https://my-ghost-blog.com/short-and-sweet/');
 
             testData = {nav: {url: 'http://my-ghost-blog.com:3000/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://my-ghost-blog.com:3000/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://my-ghost-blog.com:3000/');
 
             testData = {nav: {url: 'http://my-ghost-blog.com:3000/short-and-sweet/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://my-ghost-blog.com:3000/short-and-sweet/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://my-ghost-blog.com:3000/short-and-sweet/');
 
             testData = {nav: {url: 'http://sub.my-ghost-blog.com/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://sub.my-ghost-blog.com/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://sub.my-ghost-blog.com/');
 
             testData = {nav: {url: '//sub.my-ghost-blog.com/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('//sub.my-ghost-blog.com/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('//sub.my-ghost-blog.com/');
 
             testData = {nav: {url: 'mailto:sub@my-ghost-blog.com/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('mailto:sub@my-ghost-blog.com/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('mailto:sub@my-ghost-blog.com/');
 
             testData = {nav: {url: '#this-anchor'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('#this-anchor');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('#this-anchor');
 
             testData = {nav: {url: 'http://some-external-page.com/my-ghost-blog.com'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://some-external-page.com/my-ghost-blog.com');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://some-external-page.com/my-ghost-blog.com');
 
             testData = {nav: {url: 'http://some-external-page.com/stuff-my-ghost-blog.com-around'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://some-external-page.com/stuff-my-ghost-blog.com-around');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://some-external-page.com/stuff-my-ghost-blog.com-around');
 
             testData = {nav: {url: 'mailto:marshmallow@my-ghost-blog.com'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('mailto:marshmallow@my-ghost-blog.com');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('mailto:marshmallow@my-ghost-blog.com');
 
             configUtils.set({url: 'http://my-ghost-blog.com/blog'});
             testData = {nav: {url: 'http://my-ghost-blog.com/blog/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://my-ghost-blog.com/blog/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/');
 
             testData = {nav: {url: 'http://my-ghost-blog.com/blog/short-and-sweet/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://my-ghost-blog.com/blog/short-and-sweet/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/short-and-sweet/');
 
             testData = {nav: {url: 'http://my-ghost-blog.com:3000/blog/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://my-ghost-blog.com:3000/blog/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://my-ghost-blog.com:3000/blog/');
 
             testData = {nav: {url: 'http://my-ghost-blog.com:3000/blog/short-and-sweet/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://my-ghost-blog.com:3000/blog/short-and-sweet/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://my-ghost-blog.com:3000/blog/short-and-sweet/');
 
             testData = {nav: {url: 'http://sub.my-ghost-blog.com/blog/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('http://sub.my-ghost-blog.com/blog/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('http://sub.my-ghost-blog.com/blog/');
 
             testData = {nav: {url: '//sub.my-ghost-blog.com/blog/'}};
-            urlService.utils.urlFor(coverage, testContext, testData).should.equal('//sub.my-ghost-blog.com/blog/');
+            urlService.utils.urlFor(testContext, testData, undefined, coverage).should.equal('//sub.my-ghost-blog.com/blog/');
         });
 
         it('sitemap: should return other known paths when requested', function () {
             configUtils.set({url: 'http://my-ghost-blog.com'});
-            urlService.utils.urlFor(coverage, 'sitemap_xsl').should.equal('/sitemap.xsl');
-            urlService.utils.urlFor(coverage, 'sitemap_xsl', true).should.equal('http://my-ghost-blog.com/sitemap.xsl');
+            urlService.utils.urlFor('sitemap_xsl', undefined, undefined, coverage).should.equal('/sitemap.xsl');
+            urlService.utils.urlFor('sitemap_xsl', true, undefined, coverage).should.equal('http://my-ghost-blog.com/sitemap.xsl');
         });
 
         it('admin: relative', function () {
@@ -393,7 +393,7 @@ describe('Url', function () {
                 url: 'http://my-ghost-blog.com'
             });
 
-            urlService.utils.urlFor(coverage, 'admin').should.equal('/ghost/');
+            urlService.utils.urlFor('admin', undefined, undefined, coverage).should.equal('/ghost/');
         });
 
         it('admin: url is http', function () {
@@ -401,7 +401,7 @@ describe('Url', function () {
                 url: 'http://my-ghost-blog.com'
             });
 
-            urlService.utils.urlFor(coverage, 'admin', true).should.equal('http://my-ghost-blog.com/ghost/');
+            urlService.utils.urlFor('admin', true, undefined, coverage).should.equal('http://my-ghost-blog.com/ghost/');
         });
 
         it('admin: custom admin url is set', function () {
@@ -412,7 +412,7 @@ describe('Url', function () {
                 }
             });
 
-            urlService.utils.urlFor(coverage, 'admin', true).should.equal('https://admin.my-ghost-blog.com/ghost/');
+            urlService.utils.urlFor('admin', true, undefined, coverage).should.equal('https://admin.my-ghost-blog.com/ghost/');
         });
 
         it('admin: blog is on subdir', function () {
@@ -420,7 +420,7 @@ describe('Url', function () {
                 url: 'http://my-ghost-blog.com/blog'
             });
 
-            urlService.utils.urlFor(coverage, 'admin', true).should.equal('http://my-ghost-blog.com/blog/ghost/');
+            urlService.utils.urlFor('admin', true, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/ghost/');
         });
 
         it('admin: blog is on subdir', function () {
@@ -428,7 +428,7 @@ describe('Url', function () {
                 url: 'http://my-ghost-blog.com/blog/'
             });
 
-            urlService.utils.urlFor(coverage, 'admin', true).should.equal('http://my-ghost-blog.com/blog/ghost/');
+            urlService.utils.urlFor('admin', true, undefined, coverage).should.equal('http://my-ghost-blog.com/blog/ghost/');
         });
 
         it('admin: blog is on subdir', function () {
@@ -436,7 +436,7 @@ describe('Url', function () {
                 url: 'http://my-ghost-blog.com/blog'
             });
 
-            urlService.utils.urlFor(coverage, 'admin').should.equal('/blog/ghost/');
+            urlService.utils.urlFor('admin', undefined, undefined, coverage).should.equal('/blog/ghost/');
         });
 
         it('admin: blog is on subdir', function () {
@@ -447,7 +447,7 @@ describe('Url', function () {
                 }
             });
 
-            urlService.utils.urlFor(coverage, 'admin', true).should.equal('http://something.com/blog/ghost/');
+            urlService.utils.urlFor('admin', true, undefined, coverage).should.equal('http://something.com/blog/ghost/');
         });
 
         it('admin: blog is on subdir', function () {
@@ -458,7 +458,7 @@ describe('Url', function () {
                 }
             });
 
-            urlService.utils.urlFor(coverage, 'admin', true).should.equal('http://something.com/blog/ghost/');
+            urlService.utils.urlFor('admin', true, undefined, coverage).should.equal('http://something.com/blog/ghost/');
         });
 
         it('admin: blog is on subdir', function () {
@@ -469,7 +469,7 @@ describe('Url', function () {
                 }
             });
 
-            urlService.utils.urlFor(coverage, 'admin', true).should.equal('http://something.com/blog/ghost/');
+            urlService.utils.urlFor('admin', true, undefined, coverage).should.equal('http://something.com/blog/ghost/');
         });
 
         it('admin: blog is on subdir', function () {
@@ -480,7 +480,7 @@ describe('Url', function () {
                 }
             });
 
-            urlService.utils.urlFor(coverage, 'admin', true).should.equal('http://something.com/blog/ghost/');
+            urlService.utils.urlFor('admin', true, undefined, coverage).should.equal('http://something.com/blog/ghost/');
         });
 
         it('api: should return admin url is set', function () {
@@ -491,7 +491,7 @@ describe('Url', function () {
                 }
             });
 
-            urlService.utils.urlFor(coverage, 'api', true).should.eql('https://something.de/ghost/api/v0.1/');
+            urlService.utils.urlFor('api', true, undefined, coverage).should.eql('https://something.de/ghost/api/v0.1/');
         });
 
         it('api: url has subdir', function () {
@@ -499,11 +499,11 @@ describe('Url', function () {
                 url: 'http://my-ghost-blog.com/blog'
             });
 
-            urlService.utils.urlFor(coverage, 'api', true).should.eql('http://my-ghost-blog.com/blog/ghost/api/v0.1/');
+            urlService.utils.urlFor('api', true, undefined, coverage).should.eql('http://my-ghost-blog.com/blog/ghost/api/v0.1/');
         });
 
         it('api: relative path is correct', function () {
-            urlService.utils.urlFor(coverage, 'api').should.eql('/ghost/api/v0.1/');
+            urlService.utils.urlFor('api', undefined, undefined, coverage).should.eql('/ghost/api/v0.1/');
         });
 
         it('api: relative path with subdir is correct', function () {
@@ -511,7 +511,7 @@ describe('Url', function () {
                 url: 'http://my-ghost-blog.com/blog'
             });
 
-            urlService.utils.urlFor(coverage, 'api').should.eql('/blog/ghost/api/v0.1/');
+            urlService.utils.urlFor('api', undefined, undefined, coverage).should.eql('/blog/ghost/api/v0.1/');
         });
 
         it('api: should return http if config.url is http', function () {
@@ -519,7 +519,7 @@ describe('Url', function () {
                 url: 'http://my-ghost-blog.com'
             });
 
-            urlService.utils.urlFor(coverage, 'api', true).should.eql('http://my-ghost-blog.com/ghost/api/v0.1/');
+            urlService.utils.urlFor('api', true, undefined, coverage).should.eql('http://my-ghost-blog.com/ghost/api/v0.1/');
         });
 
         it('api: should return https if config.url is https', function () {
@@ -527,7 +527,7 @@ describe('Url', function () {
                 url: 'https://my-ghost-blog.com'
             });
 
-            urlService.utils.urlFor(coverage, 'api', true).should.eql('https://my-ghost-blog.com/ghost/api/v0.1/');
+            urlService.utils.urlFor('api', true, undefined, coverage).should.eql('https://my-ghost-blog.com/ghost/api/v0.1/');
         });
 
         it('api: with cors, blog url is http: should return no protocol', function () {
@@ -535,7 +535,7 @@ describe('Url', function () {
                 url: 'http://my-ghost-blog.com'
             });
 
-            urlService.utils.urlFor(coverage, 'api', {cors: true}, true).should.eql('//my-ghost-blog.com/ghost/api/v0.1/');
+            urlService.utils.urlFor('api', {cors: true}, true, coverage).should.eql('//my-ghost-blog.com/ghost/api/v0.1/');
         });
 
         it('api: with cors, admin url is http: cors should return no protocol', function () {
@@ -546,7 +546,7 @@ describe('Url', function () {
                 }
             });
 
-            urlService.utils.urlFor(coverage, 'api', {cors: true}, true).should.eql('//admin.ghost.example/ghost/api/v0.1/');
+            urlService.utils.urlFor('api', {cors: true}, true, coverage).should.eql('//admin.ghost.example/ghost/api/v0.1/');
         });
 
         it('api: with cors, admin url is https: should return with protocol', function () {
@@ -557,7 +557,7 @@ describe('Url', function () {
                 }
             });
 
-            urlService.utils.urlFor(coverage, 'api', {cors: true}, true).should.eql('https://admin.ghost.example/ghost/api/v0.1/');
+            urlService.utils.urlFor('api', {cors: true}, true, coverage).should.eql('https://admin.ghost.example/ghost/api/v0.1/');
         });
 
         it('api: with cors, blog url is https: should return with protocol', function () {
@@ -565,7 +565,7 @@ describe('Url', function () {
                 url: 'https://my-ghost-blog.com'
             });
 
-            urlService.utils.urlFor(coverage, 'api', {cors: true}, true).should.eql('https://my-ghost-blog.com/ghost/api/v0.1/');
+            urlService.utils.urlFor('api', {cors: true}, true, coverage).should.eql('https://my-ghost-blog.com/ghost/api/v0.1/');
         });
     });
 

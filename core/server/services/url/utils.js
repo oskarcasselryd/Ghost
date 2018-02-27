@@ -229,12 +229,13 @@ function urlPathForPost(post) {
 // E.g. if post object represents welcome post, and slugs are set to date
 // urlFor('post', {...}) -> /2014/01/01/welcome-to-ghost/
 // Parameters:
-// - context - a string, or json object describing the context for which you need a url
-// - data (optional) - a json object containing data needed to generate a url
+// - context (optional, default: '') - a string, or json object describing the context for which you need a url
+// - data (optional, default: {}) - a json object containing data needed to generate a url
 // - absolute (optional, default:false) - boolean whether or not the url should be absolute
+// - coverage (optional, default: []) - only used for coverage tests
 // This is probably not the right place for this, but it's the best place for now
 // @TODO: rewrite, very hard to read, create private functions!
-function urlFor(coverage, context, data, absolute) {
+function urlFor(context = '', data = {}, absolute = false, coverage = []) {
     var urlPath = '/',
         secure, imagePathRe,
         knownObjects = ['post', 'tag', 'author', 'image', 'nav'], baseUrl,
@@ -530,7 +531,7 @@ function redirect301(res, redirectUrl) {
 }
 
 function redirectToAdmin(status, res, adminPath) {
-    var redirectUrl = urlJoin(urlFor([], 'admin'), adminPath, '/');
+    var redirectUrl = urlJoin(urlFor('admin'), adminPath, '/');
 
     if (status === 301) {
         return redirect301(res, redirectUrl);
