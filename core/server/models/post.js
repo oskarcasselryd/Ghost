@@ -172,16 +172,7 @@ Post = ghostBookshelf.Model.extend({
             tagsToSave,
             ops = [];
 
-        // CASE: disallow published -> scheduled
-        // @TODO: remove when we have versioning based on updated_at
-        if (newStatus !== olderStatus && newStatus === 'scheduled' && olderStatus === 'published') {
-            return Promise.reject(new common.errors.ValidationError({
-                message: common.i18n.t('errors.models.post.isAlreadyPublished', {key: 'status'})
-            }));
-        }
-
-        // CASE: both page and post can get scheduled
-        if (newStatus === 'scheduled') {
+        function onSavingForScheduledStatus(publishedAt, publishedAtHasChanged, options) {
             if (!publishedAt) {
                 return Promise.reject(new common.errors.ValidationError({
                     message: common.i18n.t('errors.models.post.valueCannotBeBlank', {key: 'published_at'})
@@ -201,6 +192,37 @@ Post = ghostBookshelf.Model.extend({
                         cannotScheduleAPostBeforeInMinutes: config.get('times').cannotScheduleAPostBeforeInMinutes
                     })
                 }));
+            }
+            return undefined;
+        }
+
+        function ensurePublishedByIsSetCorrectly(newStatus, options, that) {
+            if (newStatus === 'published' && that.hasChanged('status')) {
+                // unless published_by is set and we're importing, set published_by to contextUser
+                if (!(that.get('published_by') && options.importing)) {
+                    that.set('published_by', that.contextUser(options));
+                }
+            } else {
+                // In any other case (except import), `published_by` should not be changed
+                if (that.hasChanged('published_by') && !options.importing) {
+                    that.set('published_by', that.previous('published_by'));
+                }
+            }
+        }
+
+        // CASE: disallow published -> scheduled
+        // @TODO: remove when we have versioning based on updated_at
+        if (newStatus !== olderStatus && newStatus === 'scheduled' && olderStatus === 'published') {
+            return Promise.reject(new common.errors.ValidationError({
+                message: common.i18n.t('errors.models.post.isAlreadyPublished', {key: 'status'})
+            }));
+        }
+
+        // CASE: both page and post can get scheduled
+        if (newStatus === 'scheduled') {
+            let promise = onSavingForScheduledStatus(publishedAt, publishedAtHasChanged, options);
+            if(promise) {
+                return promise;
             }
         }
 
@@ -252,17 +274,18 @@ Post = ghostBookshelf.Model.extend({
         }
 
         // If the current status is 'published' and the status has just changed ensure published_by is set correctly
-        if (newStatus === 'published' && this.hasChanged('status')) {
-            // unless published_by is set and we're importing, set published_by to contextUser
-            if (!(this.get('published_by') && options.importing)) {
-                this.set('published_by', this.contextUser(options));
-            }
-        } else {
-            // In any other case (except import), `published_by` should not be changed
-            if (this.hasChanged('published_by') && !options.importing) {
-                this.set('published_by', this.previous('published_by'));
-            }
-        }
+        ensurePublishedByIsSetCorrectly(newStatus, options, this);
+        // if (newStatus === 'published' && this.hasChanged('status')) {
+        //     // unless published_by is set and we're importing, set published_by to contextUser
+        //     if (!(this.get('published_by') && options.importing)) {
+        //         this.set('published_by', this.contextUser(options));
+        //     }
+        // } else {
+        //     // In any other case (except import), `published_by` should not be changed
+        //     if (this.hasChanged('published_by') && !options.importing) {
+        //         this.set('published_by', this.previous('published_by'));
+        //     }
+        // }
 
         // If a title is set, not the same as the old title, a draft post, and has never been published
         if (prevTitle !== undefined && newTitle !== prevTitle && newStatus === 'draft' && !publishedAt) {
