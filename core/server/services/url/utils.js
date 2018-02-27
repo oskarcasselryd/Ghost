@@ -497,17 +497,17 @@ function urlFor(context, data, absolute) {
         urlPath = knownPaths[context];
     }
 
-    var urlPathBool = urlPath.indexOf('://') !== -1;
-    if (urlPathBool) {
-        console.log('UrlFor - Reached branch #41');
-    } else {
-        urlPathBool = urlPath.match(/^(\/\/|#|[a-zA-Z0-9\-]+:)/);
-    }
-
     // This url already has a protocol so is likely an external url to be returned
     // or it is an alternative scheme, protocol-less, or an anchor-only path
     if (urlPath) {
         console.log('UrlFor - Reached branch #40');
+
+        var urlPathBool = urlPath.indexOf('://') !== -1;
+        if (urlPathBool) {
+            console.log('UrlFor - Reached branch #41');
+        } else {
+            urlPathBool = urlPath.match(/^(\/\/|#|[a-zA-Z0-9\-]+:)/);
+        }
 
         if (urlPathBool) {
             console.log('UrlFor - Reached branch #42');
