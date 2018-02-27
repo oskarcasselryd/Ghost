@@ -665,7 +665,7 @@ Post = ghostBookshelf.Model.extend({
         if (_.isNumber(postModelOrId)) { // BRANCH #0
             coverage[0] = true;
         }
-        if (!_.isString(postModelOrId)) { // BRANCH #1
+        if (_.isString(postModelOrId)) { // BRANCH #1
             coverage[1] = true;
         }
         // ---------------------------------
