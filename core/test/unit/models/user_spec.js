@@ -41,7 +41,7 @@ describe('Unit: models/user', function () {
                 nbReached++;
             }
         }
-        console.log("\nThe code is coveraged at " + (nbReached/numberOfBranches*100.0).toFixed(3) + "%")
+        console.log("\nThe code is covered at " + (nbReached/numberOfBranches*100.0).toFixed(3) + "%")
     })
 
     describe('validation', function () {
