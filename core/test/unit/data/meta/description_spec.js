@@ -2,22 +2,48 @@ var should = require('should'), // jshint ignore:line
     getMetaDescription = require('../../../../server/data/meta/description');
 
 describe('getMetaDescription', function () {
+    var coverage;
+
+    before(function() {
+        coverage = new Array(21); // 21 branches
+        for(let i=0; i<21; i++) {
+            coverage[i] = false;
+        }
+
+    });
+
+    after(function() {
+        var allCovered = true;
+        for(let i=0; i<21; i++) {
+            if (coverage[i] == false) {
+                allCovered = false;
+                console.log("Did not reach branch #" + i);
+            }
+        }
+        if(allCovered) {
+            console.log("All branches covered!");
+        }
+
+    });
+        //
+
+
     it('should return meta_description if on data root', function () {
-        var description = getMetaDescription({
+        var description = getMetaDescription(coverage, {
             meta_description: 'My test description.'
         });
         description.should.equal('My test description.');
     });
 
     it('should return empty string if on root context contains paged', function () {
-        var description = getMetaDescription({}, {
+        var description = getMetaDescription(coverage, {}, {
             context: ['paged']
         });
         description.should.equal('');
     });
 
     it('should not return meta description for author if on root context contains author and no meta description provided', function () {
-        var description = getMetaDescription({
+        var description = getMetaDescription(coverage, {
             author: {
                 bio: 'Just some hack building code to make the world better.'
             }
@@ -28,7 +54,7 @@ describe('getMetaDescription', function () {
     });
 
     it('should return meta description for author if on root context contains author and meta description provided', function () {
-        var description = getMetaDescription({
+        var description = getMetaDescription(coverage, {
             author: {
                 bio: 'Just some hack building code to make the world better.',
                 meta_description: 'Author meta description.'
@@ -40,7 +66,7 @@ describe('getMetaDescription', function () {
     });
 
     it('should return data tag meta description if on root context contains tag', function () {
-        var description = getMetaDescription({
+        var description = getMetaDescription(coverage, {
             tag: {
                 meta_description: 'Best tag ever!'
             }
@@ -51,7 +77,7 @@ describe('getMetaDescription', function () {
     });
 
     it('should not return data tag description if no meta description for tag', function () {
-        var description = getMetaDescription({
+        var description = getMetaDescription(coverage, {
             tag: {
                 meta_description: '',
                 description: 'The normal description'
@@ -63,7 +89,7 @@ describe('getMetaDescription', function () {
     });
 
     it('should return data post meta description if on root context contains post', function () {
-        var description = getMetaDescription({
+        var description = getMetaDescription(coverage, {
             post: {
                 meta_description: 'Best post ever!'
             }
@@ -74,7 +100,7 @@ describe('getMetaDescription', function () {
     });
 
     it('should return OG data post meta description if on root context contains post', function () {
-        var description = getMetaDescription({
+        var description = getMetaDescription(coverage, {
             post: {
                 meta_description: 'Best post ever!',
                 og_description: 'My custom Facebook description!'
@@ -88,7 +114,7 @@ describe('getMetaDescription', function () {
     });
 
     it('should not return data post meta description if on root context contains post and called with OG property', function () {
-        var description = getMetaDescription({
+        var description = getMetaDescription(coverage, {
             post: {
                 meta_description: 'Best post ever!',
                 og_description: ''
@@ -102,7 +128,7 @@ describe('getMetaDescription', function () {
     });
 
     it('should return Twitter data post meta description if on root context contains post', function () {
-        var description = getMetaDescription({
+        var description = getMetaDescription(coverage, {
             post: {
                 meta_description: 'Best post ever!',
                 twitter_description: 'My custom Twitter description!'
@@ -116,7 +142,7 @@ describe('getMetaDescription', function () {
     });
 
     it('should return data post meta description if on root context contains post for an AMP post', function () {
-        var description = getMetaDescription({
+        var description = getMetaDescription(coverage, {
             post: {
                 meta_description: 'Best AMP post ever!'
             }
@@ -127,7 +153,7 @@ describe('getMetaDescription', function () {
     });
 
     it('should return data post meta description if on root context contains page', function () {
-        var description = getMetaDescription({
+        var description = getMetaDescription(coverage, {
             post: {
                 meta_description: 'Best page ever!'
             }
