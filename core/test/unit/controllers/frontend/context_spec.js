@@ -10,9 +10,14 @@ var should = require('should'),
     sandbox = sinon.sandbox.create();
 
 describe('Contexts', function () {
-    var req, res, data, setupContext;
+    var coverage, req, res, data, setupContext;
 
     beforeEach(function () {
+        coverage = new Array(18); // 21 branches
+        for(let i=0; i<18; i++) {
+            coverage[i] = false;
+        }
+
         req = {
             params: {},
             body: {}
@@ -24,6 +29,16 @@ describe('Contexts', function () {
     });
 
     afterEach(function () {
+        var allCovered = true;
+        for(let i=0; i<18; i++) {
+            if (coverage[i] == false) {
+                allCovered = false;
+                console.log("Did not reach branch #" + i);
+            }
+        }
+        if(allCovered) {
+            console.log("All branches covered!");
+        }
         sandbox.restore();
     });
 
@@ -58,7 +73,7 @@ describe('Contexts', function () {
             data = {};
 
             // Execute test
-            setResponseContext(req, res, data);
+            setResponseContext(coverage, req, res, data);
 
             // Check context
             should.exist(res.locals.context);
@@ -70,7 +85,7 @@ describe('Contexts', function () {
             // BeforeEach sets each of these to the bare minimum that should be provided for determining context
 
             // Execute test
-            setResponseContext(req, res, data);
+            setResponseContext(coverage, req, res, data);
 
             // Check context
             should.exist(res.locals.context);
@@ -79,13 +94,14 @@ describe('Contexts', function () {
     });
 
     describe('Channels', function () {
+        coverage;
         describe('Index', function () {
             it('should correctly identify index channel', function () {
                 // Setup test
                 setupContext('/does/not/matter/', 'index');
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -98,7 +114,7 @@ describe('Contexts', function () {
                 setupContext('/', 'index');
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -112,7 +128,7 @@ describe('Contexts', function () {
                 setupContext('/');
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -125,7 +141,7 @@ describe('Contexts', function () {
                 setupContext('/page/2/', 'index');
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -138,7 +154,7 @@ describe('Contexts', function () {
                 setupContext('/page/2/', 'index', 2);
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -154,7 +170,7 @@ describe('Contexts', function () {
                 setupContext('/tag/getting-started/', 'tag');
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -167,7 +183,7 @@ describe('Contexts', function () {
                 setupContext('/tag/getting-started/');
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -179,7 +195,7 @@ describe('Contexts', function () {
                 setupContext('/tag/getting-started/page/2/', 'tag');
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 should.exist(res.locals.context);
                 res.locals.context.should.be.an.Array().with.lengthOf(1);
@@ -191,7 +207,7 @@ describe('Contexts', function () {
                 setupContext('/tag/getting-started/page/2/', 'tag', 2);
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -207,7 +223,7 @@ describe('Contexts', function () {
                 setupContext('/author/pat/', 'author');
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -220,7 +236,7 @@ describe('Contexts', function () {
                 setupContext('/author/pat/');
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -232,7 +248,7 @@ describe('Contexts', function () {
                 setupContext('/author/pat/page/2/', 'author');
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -245,7 +261,7 @@ describe('Contexts', function () {
                 setupContext('/author/pat/page/2/', 'author', 2);
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -263,7 +279,7 @@ describe('Contexts', function () {
                 setupContext('/featured/', featuredChannel);
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -279,7 +295,7 @@ describe('Contexts', function () {
                 setupContext('/featured/', channel);
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -293,7 +309,7 @@ describe('Contexts', function () {
                 setupContext('/featured/page/2/', featuredChannel);
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -306,7 +322,7 @@ describe('Contexts', function () {
                 setupContext('/featured/page/2/', featuredChannel, 2);
 
                 // Execute test
-                setResponseContext(req, res, data);
+                setResponseContext(coverage, req, res, data);
 
                 // Check context
                 should.exist(res.locals.context);
@@ -324,7 +340,7 @@ describe('Contexts', function () {
             data.post = {};
 
             // Execute test
-            setResponseContext(req, res, data);
+            setResponseContext(coverage, req, res, data);
 
             // Check context
             should.exist(res.locals.context);
@@ -337,7 +353,7 @@ describe('Contexts', function () {
             setupContext('/welcome-to-ghost/');
 
             // Execute test
-            setResponseContext(req, res, data);
+            setResponseContext(coverage, req, res, data);
 
             // Check context
             should.exist(res.locals.context);
@@ -350,7 +366,7 @@ describe('Contexts', function () {
             data.post = {page: true};
 
             // Execute test
-            setResponseContext(req, res, data);
+            setResponseContext(coverage, req, res, data);
 
             // Check context
             should.exist(res.locals.context);
@@ -365,7 +381,7 @@ describe('Contexts', function () {
             setupContext('/private/?r=');
 
             // Execute test
-            setResponseContext(req, res, data);
+            setResponseContext(coverage, req, res, data);
 
             // Check context
             should.exist(res.locals.context);
@@ -384,7 +400,7 @@ describe('Contexts', function () {
             };
 
             // Execute test
-            setResponseContext(req, res, data);
+            setResponseContext(coverage, req, res, data);
 
             // Check context
             should.exist(res.locals.context);
@@ -401,7 +417,7 @@ describe('Contexts', function () {
             };
 
             // Execute test
-            setResponseContext(req, res, data);
+            setResponseContext(coverage, req, res, data);
 
             // Check context
             should.exist(res.locals.context);
@@ -419,7 +435,7 @@ describe('Contexts', function () {
             };
 
             // Execute test
-            setResponseContext(req, res, data);
+            setResponseContext(coverage, req, res, data);
             // Check context
             should.exist(res.locals.context);
             res.locals.context.should.be.an.Array().with.lengthOf(2);
@@ -435,7 +451,7 @@ describe('Contexts', function () {
             };
 
             // Execute test
-            setResponseContext(req, res, data);
+            setResponseContext(coverage, req, res, data);
             // Check context
             should.exist(res.locals.context);
             res.locals.context.should.be.an.Array().with.lengthOf(2);
