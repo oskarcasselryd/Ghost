@@ -41,7 +41,7 @@ describe('Unit: models/user', function () {
                 nbReached++;
             }
         }
-        console.log("\nThe code is coveraged at " + (nbReached/numberOfBranches*100.0).toFixed(3) + "%")
+        console.log("\nThe code is covered at " + (nbReached/numberOfBranches*100.0).toFixed(3) + "%")
     })
 
     describe('validation', function () {
@@ -206,7 +206,7 @@ describe('Unit: models/user', function () {
             var mockUser = getUserModel(1, 'Owner'),
                 context = {user: 1};
 
-            models.User.permissible(coverage, mockUser, 'destroy', context, {}, testUtils.permissions.owner, true, true).then(() => {
+            models.User.permissible(mockUser, 'destroy', context, {}, testUtils.permissions.owner, true, true, coverage).then(() => {
                 done(new Error('Permissible function should have errored'));
             }).catch((error) => {
                 error.should.be.an.instanceof(common.errors.NoPermissionError);
@@ -219,7 +219,7 @@ describe('Unit: models/user', function () {
             var mockUser = getUserModel(3, 'Contributor'),
                 context = {user: 3};
 
-            return models.User.permissible(coverage, mockUser, 'edit', context, {}, testUtils.permissions.contributor, false, true).then(() => {
+            return models.User.permissible(mockUser, 'edit', context, {}, testUtils.permissions.contributor, false, true, coverage).then(() => {
                 should(mockUser.get.calledOnce).be.true();
             });
         });
@@ -229,7 +229,7 @@ describe('Unit: models/user', function () {
             var mockUser = getUserModel(3, 'Owner'),
                 context = {user: 3};
 
-            return models.User.permissible(coverage, mockUser, 'edit', context, {}, testUtils.permissions.contributor, false, true).then(() => {
+            return models.User.permissible(mockUser, 'edit', context, {}, testUtils.permissions.contributor, false, true, coverage).then(() => {
                 should(mockUser.get.calledOnce).be.true();
             });
         });
@@ -239,7 +239,7 @@ describe('Unit: models/user', function () {
             var mockUser = getUserModel(3, 'Owner'),
                 context = {user: 3};
 
-            return models.User.permissible(coverage, mockUser, 'edit', context, {}, testUtils.permissions.owner, false, true).then(() => {
+            return models.User.permissible(mockUser, 'edit', context, {}, testUtils.permissions.owner, false, true, coverage).then(() => {
                 should(mockUser.get.calledOnce).be.true();
             });
         });
@@ -251,7 +251,7 @@ describe('Unit: models/user', function () {
 
             sandbox.stub(models.User, 'findOne').resolves(mockUser);
 
-            return models.User.permissible(coverage, 3, 'edit', context, {}, testUtils.permissions.owner, false, true).then(() => {
+            return models.User.permissible(3, 'edit', context, {}, testUtils.permissions.owner, false, true, coverage).then(() => {
                 should(mockUser.get.calledOnce).be.true();
             });
         });
@@ -263,7 +263,7 @@ describe('Unit: models/user', function () {
 
             sandbox.stub(models.User, 'findOne').resolves(mockUser);
 
-            return models.User.permissible(coverage, '3', 'edit', context, {}, testUtils.permissions.owner, false, true).then(() => {
+            return models.User.permissible('3', 'edit', context, {}, testUtils.permissions.owner, false, true, coverage).then(() => {
                 should(mockUser.get.calledOnce).be.true();
             });
         });
@@ -281,17 +281,18 @@ describe('Unit: models/user', function () {
 
             sandbox.stub(models.User, 'findOne').resolves(mockUser);
 
-            return models.User.permissible(coverage, mockUser, 'edit', context, {}, testUtils.permissions.owner, false, true).then(() => {
+            return models.User.permissible(mockUser, 'edit', context, {}, testUtils.permissions.owner, false, true, coverage).then(() => {
                 should(mockUser.get.calledOnce).be.true();
             });
         });
+
 
         describe('as editor', function () {
             it('can\'t edit another editor', function (done) {
                 var mockUser = getUserModel(3, 'Editor'),
                     context = {user: 2};
 
-                models.User.permissible(coverage, mockUser, 'edit', context, {}, testUtils.permissions.editor, true, true).then(() => {
+                models.User.permissible(mockUser, 'edit', context, {}, testUtils.permissions.editor, true, true, coverage).then(() => {
                     done(new Error('Permissible function should have errored'));
                 }).catch((error) => {
                     error.should.be.an.instanceof(common.errors.NoPermissionError);
@@ -305,7 +306,7 @@ describe('Unit: models/user', function () {
                 var mockUser = getUserModel(3, 'Administrator'),
                     context = {user: 2};
 
-                models.User.permissible(coverage, mockUser, 'edit', context, {}, testUtils.permissions.editor, true, true).then(() => {
+                models.User.permissible(mockUser, 'edit', context, {}, testUtils.permissions.editor, true, true, coverage).then(() => {
                     done(new Error('Permissible function should have errored'));
                 }).catch((error) => {
                     error.should.be.an.instanceof(common.errors.NoPermissionError);
@@ -319,7 +320,7 @@ describe('Unit: models/user', function () {
                 var mockUser = getUserModel(3, 'Author'),
                     context = {user: 2};
 
-                return models.User.permissible(coverage, mockUser, 'edit', context, {}, testUtils.permissions.editor, true, true).then(() => {
+                return models.User.permissible(mockUser, 'edit', context, {}, testUtils.permissions.editor, true, true, coverage).then(() => {
                     should(mockUser.hasRole.called).be.true();
                     should(mockUser.get.calledOnce).be.true();
                 });
@@ -329,7 +330,7 @@ describe('Unit: models/user', function () {
                 var mockUser = getUserModel(3, 'Contributor'),
                     context = {user: 2};
 
-                return models.User.permissible(coverage, mockUser, 'edit', context, {}, testUtils.permissions.editor, true, true).then(() => {
+                return models.User.permissible(mockUser, 'edit', context, {}, testUtils.permissions.editor, true, true, coverage).then(() => {
                     should(mockUser.hasRole.called).be.true();
                     should(mockUser.get.calledOnce).be.true();
                 });
@@ -339,7 +340,7 @@ describe('Unit: models/user', function () {
                 var mockUser = getUserModel(3, 'Editor'),
                     context = {user: 3};
 
-                return models.User.permissible(coverage, mockUser, 'destroy', context, {}, testUtils.permissions.editor, true, true).then(() => {
+                return models.User.permissible(mockUser, 'destroy', context, {}, testUtils.permissions.editor, true, true, coverage).then(() => {
                     should(mockUser.hasRole.called).be.true();
                     should(mockUser.get.calledOnce).be.true();
                 });
@@ -349,7 +350,7 @@ describe('Unit: models/user', function () {
                 var mockUser = getUserModel(3, 'Editor'),
                     context = {user: 2};
 
-                models.User.permissible(coverage, mockUser, 'destroy', context, {}, testUtils.permissions.editor, true, true).then(() => {
+                models.User.permissible(mockUser, 'destroy', context, {}, testUtils.permissions.editor, true, true, coverage).then(() => {
                     done(new Error('Permissible function should have errored'));
                 }).catch((error) => {
                     error.should.be.an.instanceof(common.errors.NoPermissionError);
@@ -363,7 +364,7 @@ describe('Unit: models/user', function () {
                 var mockUser = getUserModel(3, 'Administrator'),
                     context = {user: 2};
 
-                models.User.permissible(coverage, mockUser, 'destroy', context, {}, testUtils.permissions.editor, true, true).then(() => {
+                models.User.permissible(mockUser, 'destroy', context, {}, testUtils.permissions.editor, true, true, coverage).then(() => {
                     done(new Error('Permissible function should have errored'));
                 }).catch((error) => {
                     error.should.be.an.instanceof(common.errors.NoPermissionError);
@@ -377,7 +378,7 @@ describe('Unit: models/user', function () {
                 var mockUser = getUserModel(3, 'Author'),
                     context = {user: 2};
 
-                return models.User.permissible(coverage, mockUser, 'destroy', context, {}, testUtils.permissions.editor, true, true).then(() => {
+                return models.User.permissible(mockUser, 'destroy', context, {}, testUtils.permissions.editor, true, true, coverage).then(() => {
                     should(mockUser.hasRole.called).be.true();
                     should(mockUser.get.calledOnce).be.true();
                 });
@@ -387,7 +388,7 @@ describe('Unit: models/user', function () {
                 var mockUser = getUserModel(3, 'Contributor'),
                     context = {user: 2};
 
-                return models.User.permissible(coverage, mockUser, 'destroy', context, {}, testUtils.permissions.editor, true, true).then(() => {
+                return models.User.permissible(mockUser, 'destroy', context, {}, testUtils.permissions.editor, true, true, coverage).then(() => {
                     should(mockUser.hasRole.called).be.true();
                     should(mockUser.get.calledOnce).be.true();
                 });
