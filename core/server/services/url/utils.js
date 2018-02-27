@@ -250,7 +250,7 @@ function urlFor(context, data, absolute) {
 
     // Make data properly optional
     if (_.isBoolean(data)) {
-        console.log('Reached branch #1');
+        console.log('UrlFor - Reached branch #1');
 
         absolute = data;
         data = null;
@@ -259,20 +259,20 @@ function urlFor(context, data, absolute) {
     // Can pass 'secure' flag in either context or data arg
     var isContextSecure = context;
     if (isContextSecure) {
-        console.log('Reached branch #2');
+        console.log('UrlFor - Reached branch #2');
 
         isContextSecure = context.secure;
     }
 
     var isDataSecure = data;
     if (isDataSecure) {
-        console.log('Reached branch #4');
+        console.log('UrlFor - Reached branch #4');
 
         isDataSecure = data.secure;
     }
 
     if (isContextSecure) {
-        console.log('Reached branch #3');
+        console.log('UrlFor - Reached branch #3');
 
         secure = isContextSecure;
     } else {
@@ -281,104 +281,104 @@ function urlFor(context, data, absolute) {
 
     var isRelative = _.isObject(context);
     if (isRelative) {
-        console.log('Reached branch #5');
+        console.log('UrlFor - Reached branch #5');
 
         isRelative = context.relativeUrl;
     }
 
     var contextIsKnownObject = _.isString(context);
     if (contextIsKnownObject) {
-        console.log('Reached branch #7');
+        console.log('UrlFor - Reached branch #7');
 
         contextIsKnownObject = _.indexOf(knownObjects, context) !== -1;
     }
 
     var isHomeAndAbsolute = context === 'home';
     if (isHomeAndAbsolute) {
-        console.log('Reached branch #25');
+        console.log('UrlFor - Reached branch #25');
 
         isHomeAndAbsolute = absolute;
     }
 
     var contextIsKnownPath = _.isString(context);
     if (contextIsKnownPath) {
-        console.log('Reached branch #38');
+        console.log('UrlFor - Reached branch #38');
 
         contextIsKnownPath = _.indexOf(_.keys(knownPaths), context) !== -1;
     }
 
     if (isRelative) {
-        console.log('Reached branch #6');
+        console.log('UrlFor - Reached branch #6');
 
         urlPath = context.relativeUrl;
     } else if (contextIsKnownObject) {
-        console.log('Reached branch #8');
+        console.log('UrlFor - Reached branch #8');
 
         var isPost = context === 'post';
         if (isPost) {
-            console.log('Reached branch #9');
+            console.log('UrlFor - Reached branch #9');
 
             isPost = data.post;
         }
 
         var isTag = context === 'tag';
         if (isTag) {
-            console.log('Reached branch #11');
+            console.log('UrlFor - Reached branch #11');
 
             isTag = data.tag;
         }
 
         var isAuthor = context === 'author';
         if (isAuthor) {
-            console.log('Reached branch #13');
+            console.log('UrlFor - Reached branch #13');
 
             isAuthor = data.author;
         }
 
         var isImage = context === 'image';
         if (isImage) {
-            console.log('Reached branch #15');
+            console.log('UrlFor - Reached branch #15');
 
             isImage = data.image;
         }
 
         var isNav = context === 'nav';
         if (isNav) {
-            console.log('Reached branch #19');
+            console.log('UrlFor - Reached branch #19');
 
             isNav = data.nav;
         }
 
         // trying to create a url for an object
         if (isPost) {
-            console.log('Reached branch #10');
+            console.log('UrlFor - Reached branch #10');
 
             urlPath = data.post.url;
             secure = data.secure;
         } else if (isTag) {
-            console.log('Reached branch #12');
+            console.log('UrlFor - Reached branch #12');
 
             urlPath = urlJoin('/', config.get('routeKeywords').tag, data.tag.slug, '/');
             secure = data.tag.secure;
         } else if (isAuthor) {
-            console.log('Reached branch #14');
+            console.log('UrlFor - Reached branch #14');
 
             urlPath = urlJoin('/', config.get('routeKeywords').author, data.author.slug, '/');
             secure = data.author.secure;
         } else if (isImage) {
-            console.log('Reached branch #16');
+            console.log('UrlFor - Reached branch #16');
 
             urlPath = data.image;
             imagePathRe = new RegExp('^' + getSubdir() + '/' + STATIC_IMAGE_URL_PREFIX);
 
             if (!imagePathRe.test(data.image)) {
-                console.log('Reached branch #17');
+                console.log('UrlFor - Reached branch #17');
 
                 absolute = false;
             }
 
             if (absolute) {
-                console.log('Reached branch #18');
+                console.log('UrlFor - Reached branch #18');
 
                 // Remove the sub-directory from the URL because ghostConfig will add it back.
                 urlPath = urlPath.replace(new RegExp('^' + getSubdir()), '');
@@ -388,12 +388,12 @@ function urlFor(context, data, absolute) {
 
             return urlPath;
         } else if (isNav) {
-            console.log('Reached branch #20');
+            console.log('UrlFor - Reached branch #20');
 
             urlPath = data.nav.url;
 
             if (data.nav.secure) {
-                console.log('Reached branch #21');
+                console.log('UrlFor - Reached branch #21');
 
                 secure = data.nav.secure;
             }
@@ -403,15 +403,15 @@ function urlFor(context, data, absolute) {
 
             // If the hostname is present in the url
             if (urlPath.indexOf(hostname) > -1) {
-                console.log('Reached branch #22');
+                console.log('UrlFor - Reached branch #22');
 
                 // do no not apply, if there is a subdomain, or a mailto link
                 if (!urlPath.split(hostname)[0].match(/\.|mailto:/)) {
-                    console.log('Reached branch #23');
+                    console.log('UrlFor - Reached branch #23');
 
                     // do not apply, if there is a port after the hostname
                     if(urlPath.split(hostname)[1].substring(0, 1) !== ':') {
-                        console.log('Reached branch #24');
+                        console.log('UrlFor - Reached branch #24');
 
                         // make link relative to account for possible mismatch in http/https etc, force absolute
                         urlPath = urlPath.split(hostname)[1];
@@ -422,26 +422,26 @@ function urlFor(context, data, absolute) {
             }
         }
     } else if (isHomeAndAbsolute) {
-        console.log('Reached branch #26');
+        console.log('UrlFor - Reached branch #26');
 
         urlPath = getBlogUrl(secure);
 
         // CASE: there are cases where urlFor('home') needs to be returned without trailing
         // slash e. g. the `{{@blog.url}}` helper. See https://github.com/TryGhost/Ghost/issues/8569
         if (data) {
-            console.log('Reached branch #27');
+            console.log('UrlFor - Reached branch #27');
 
             if (data.trailingSlash === false) {
-                console.log('Reached branch #28');
+                console.log('UrlFor - Reached branch #28');
 
                 urlPath = urlPath.replace(/\/$/, '');
             }
         }
     } else if (context === 'admin') {
-        console.log('Reached branch #29');
+        console.log('UrlFor - Reached branch #29');
 
         if (getAdminUrl()) {
-            console.log('Reached branch #30');
+            console.log('UrlFor - Reached branch #30');
 
             urlPath = getAdminUrl();
         } else {
@@ -449,17 +449,17 @@ function urlFor(context, data, absolute) {
         }
 
         if (absolute) {
-            console.log('Reached branch #31');
+            console.log('UrlFor - Reached branch #31');
 
             urlPath += 'ghost/';
         } else {
             urlPath = '/ghost/';
         }
     } else if (context === 'api') {
-        console.log('Reached branch #32');
+        console.log('UrlFor - Reached branch #32');
 
         if (getAdminUrl()) {
-            console.log('Reached branch #33');
+            console.log('UrlFor - Reached branch #33');
 
             urlPath = getAdminUrl();
         } else {
@@ -470,13 +470,13 @@ function urlFor(context, data, absolute) {
         // So it depends how you serve your blog. The main focus here is to avoid cors problems.
         // @TODO: rename cors
         if (data) {
-            console.log('Reached branch #34');
+            console.log('UrlFor - Reached branch #34');
 
             if (data.cors) {
-                console.log('Reached branch #35');
+                console.log('UrlFor - Reached branch #35');
 
                 if (!urlPath.match(/^https:/)) {
-                    console.log('Reached branch #36');
+                    console.log('UrlFor - Reached branch #36');
 
                     urlPath = urlPath.replace(/^.*?:\/\//g, '//');
                 }
@@ -484,14 +484,14 @@ function urlFor(context, data, absolute) {
         }
 
         if (absolute) {
-            console.log('Reached branch #37');
+            console.log('UrlFor - Reached branch #37');
 
             urlPath = urlPath.replace(/\/$/, '') + API_PATH;
         } else {
             urlPath = API_PATH;
         }
     } else if (contextIsKnownPath) {
-        console.log('Reached branch #39');
+        console.log('UrlFor - Reached branch #39');
 
         // trying to create a url for a named path
         urlPath = knownPaths[context];
@@ -499,7 +499,7 @@ function urlFor(context, data, absolute) {
 
     var urlPathBool = urlPath.indexOf('://') !== -1;
     if (urlPathBool) {
-        console.log('Reached branch #41');
+        console.log('UrlFor - Reached branch #41');
     } else {
         urlPathBool = urlPath.match(/^(\/\/|#|[a-zA-Z0-9\-]+:)/);
     }
@@ -507,10 +507,10 @@ function urlFor(context, data, absolute) {
     // This url already has a protocol so is likely an external url to be returned
     // or it is an alternative scheme, protocol-less, or an anchor-only path
     if (urlPath) {
-        console.log('Reached branch #40');
+        console.log('UrlFor - Reached branch #40');
 
         if (urlPathBool) {
-            console.log('Reached branch #42');
+            console.log('UrlFor - Reached branch #42');
 
             return urlPath;
         }
