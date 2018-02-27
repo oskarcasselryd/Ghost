@@ -200,6 +200,68 @@ describe('Unit: models/user', function () {
             });
         });
 
+        //------ NEW TEST BRANCH #7 --------
+        it('can always edit when owner', function () {
+            var mockUser = getUserModel(3, 'Owner'),
+                context = {user: 3};
+
+            return models.User.permissible( mockUser, 'edit', context, {}, testUtils.permissions.contributor, false, true).then(() => {
+                should(mockUser.get.calledOnce).be.true();
+            });
+        });
+
+        //------ NEW TEST BRANCH #8 --------
+        it('can always edit when owner and with permissions owner', function () {
+            var mockUser = getUserModel(3, 'Owner'),
+                context = {user: 3};
+
+            return models.User.permissible( mockUser, 'edit', context, {}, testUtils.permissions.owner, false, true).then(() => {
+                should(mockUser.get.calledOnce).be.true();
+            });
+        });
+
+        //------ NEW TEST BRANCH #2 --------
+        it('can always edit self given number id', function () {
+            var mockUser = getUserModel(3, 'Contributor'),
+                context = {user: 3};
+
+            sandbox.stub(models.User, 'findOne').resolves(mockUser);
+
+            return models.User.permissible( 3, 'edit', context, {}, testUtils.permissions.owner, false, true).then(() => {
+                should(mockUser.get.calledOnce).be.true();
+            });
+        });
+
+        //------ NEW TEST BRANCH #3 --------
+        it('can always edit self given string id', function () {
+            var mockUser = getUserModel(3, 'Contributor'),
+                context = {user: 3};
+
+            sandbox.stub(models.User, 'findOne').resolves(mockUser);
+
+            return models.User.permissible( '3', 'edit', context, {}, testUtils.permissions.owner, false, true).then(() => {
+                should(mockUser.get.calledOnce).be.true();
+            });
+        });
+
+        //------ NEW TEST BRANCH #1 --------
+        it('can always edit self given number if no role is given', function () {
+            var hasRole = sandbox.stub();
+            var mockUser = {
+                hasRole: hasRole,
+                id: sandbox.stub().returns(3),
+                related: sandbox.stub().returns(null),
+                get: sandbox.stub().returns(3)
+            };
+            var context = {user: 3};
+
+            sandbox.stub(models.User, 'findOne').resolves(mockUser);
+
+            return models.User.permissible( mockUser, 'edit', context, {}, testUtils.permissions.owner, false, true).then(() => {
+                should(mockUser.get.calledOnce).be.true();
+            });
+        });
+
         describe('as editor', function () {
             it('can\'t edit another editor', function (done) {
                 var mockUser = getUserModel(3, 'Editor'),
