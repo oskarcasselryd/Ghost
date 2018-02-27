@@ -257,7 +257,7 @@ describe('Unit: models/user', function () {
         });
 
         //------ NEW TEST BRANCH #3 --------
-        it('can always edit self given number id', function () {
+        it('can always edit self given string id', function () {
             var mockUser = getUserModel(3, 'Contributor'),
                 context = {user: 3};
 
