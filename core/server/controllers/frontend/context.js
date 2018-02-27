@@ -20,7 +20,7 @@ var config = require('../../config'),
     ampPattern = new RegExp('\\/' + config.get('routeKeywords').amp + '\\/$'),
     homePattern = new RegExp('^\\/$');
 
-function setResponseContext(coverage, req, res, data) {
+function setResponseContext(req, res, data, coverage = new Array(19)) {
     var pageParam;
 
     // ---------- COVERAGE ----------
