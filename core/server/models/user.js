@@ -615,7 +615,7 @@ User = ghostBookshelf.Model.extend({
         // If we passed in an id instead of a model get the model first
         if (_.isNumber(userModelOrId) || _.isString(userModelOrId)) { // BRANCH #2 && #3
             // Grab the original args without the first one
-            origArgs = _.toArray(arguments).slice(2);
+            origArgs = _.toArray(arguments).slice(1);
             // Get the actual user model
             return this.findOne({
                 id: userModelOrId,
