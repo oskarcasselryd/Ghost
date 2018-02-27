@@ -673,7 +673,7 @@ Post = ghostBookshelf.Model.extend({
         // then check the permissions
         if (_.isNumber(postModelOrId) || _.isString(postModelOrId)) { // BRANCH #0 && // BRANCH #1
             // Grab the original args without the first one
-            origArgs = _.toArray(arguments).slice(1);
+            origArgs = _.toArray(arguments).slice(2);
 
             // Get the actual post model
             return this.findOne({id: postModelOrId, status: 'all'})
@@ -685,7 +685,7 @@ Post = ghostBookshelf.Model.extend({
                     }
 
                     // Build up the original args but substitute with actual model
-                    var newArgs = [foundPostModel].concat(origArgs);
+                    var newArgs = [coverage, foundPostModel].concat(origArgs);
 
                     return self.permissible.apply(self, newArgs);
                 });
