@@ -1,7 +1,7 @@
 var _ = require('lodash'),
     settingsCache = require('../../services/settings/cache');
 
-function getDescription(coverage, data, root, options) {
+function getDescription(data, root, options, coverage = new Array(20)) {
     var description = '',
         postSdDescription,
         context,
