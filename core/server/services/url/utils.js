@@ -271,69 +271,19 @@ function urlFor(context, data, absolute) {
             urlPath = urlJoin('/', config.get('routeKeywords').author, data.author.slug, '/');
             secure = data.author.secure;
         } else if (context === 'image' && data.image) {
-            urlPath = data.image;
-            imagePathRe = new RegExp('^' + getSubdir() + '/' + STATIC_IMAGE_URL_PREFIX);
-            absolute = imagePathRe.test(data.image) ? absolute : false;
-
-            if (absolute) {
-                // Remove the sub-directory from the URL because ghostConfig will add it back.
-                urlPath = urlPath.replace(new RegExp('^' + getSubdir()), '');
-                baseUrl = getBlogUrl(secure).replace(/\/$/, '');
-                urlPath = baseUrl + urlPath;
-            }
-
-            return urlPath;
+            return urlForImageContext(urlPath, data, absolute, secure);
         } else if (context === 'nav' && data.nav) {
-            urlPath = data.nav.url;
             secure = data.nav.secure || secure;
-            baseUrl = getBlogUrl(secure);
-            hostname = baseUrl.split('//')[1];
-
-            // If the hostname is present in the url
-            if (urlPath.indexOf(hostname) > -1
-                // do no not apply, if there is a subdomain, or a mailto link
-                && !urlPath.split(hostname)[0].match(/\.|mailto:/)
-                // do not apply, if there is a port after the hostname
-                && urlPath.split(hostname)[1].substring(0, 1) !== ':') {
-                // make link relative to account for possible mismatch in http/https etc, force absolute
-                urlPath = urlPath.split(hostname)[1];
-                urlPath = urlJoin('/', urlPath);
-                absolute = true;
-            }
+            let res = urlForNavContext(urlPath, data, secure, absolute);
+            urlPath = res[0];
+            absolute = res[1];
         }
-    } else if (context === 'home' && absolute) {
-        urlPath = getBlogUrl(secure);
-
-        // CASE: there are cases where urlFor('home') needs to be returned without trailing
-        // slash e. g. the `{{@blog.url}}` helper. See https://github.com/TryGhost/Ghost/issues/8569
-        if (data && data.trailingSlash === false) {
-            urlPath = urlPath.replace(/\/$/, '');
-        }
+    } else if (context === 'home') {
+        urlPath = urlForHomeContext(urlPath, secure, absolute, data);
     } else if (context === 'admin') {
-        urlPath = getAdminUrl() || getBlogUrl();
-
-        if (absolute) {
-            urlPath += 'ghost/';
-        } else {
-            urlPath = '/ghost/';
-        }
+        urlPath = urlForAdminContext(urlPath, absolute);
     } else if (context === 'api') {
-        urlPath = getAdminUrl() || getBlogUrl();
-
-        // CASE: with or without protocol? If your blog url (or admin url) is configured to http, it's still possible that e.g. nginx allows both https+http.
-        // So it depends how you serve your blog. The main focus here is to avoid cors problems.
-        // @TODO: rename cors
-        if (data && data.cors) {
-            if (!urlPath.match(/^https:/)) {
-                urlPath = urlPath.replace(/^.*?:\/\//g, '//');
-            }
-        }
-
-        if (absolute) {
-            urlPath = urlPath.replace(/\/$/, '') + API_PATH;
-        } else {
-            urlPath = API_PATH;
-        }
+        urlPath = urlForApiContext(urlPath, absolute, data);
     } else if (_.isString(context) && _.indexOf(_.keys(knownPaths), context) !== -1) {
         // trying to create a url for a named path
         urlPath = knownPaths[context];
@@ -346,6 +296,84 @@ function urlFor(context, data, absolute) {
     }
 
     return createUrl(urlPath, absolute, secure);
+}
+
+function urlForNavContext(urlPath, data, secure, absolute) {
+    urlPath = data.nav.url;
+    let baseUrl = getBlogUrl(secure);
+    let hostname = baseUrl.split('//')[1];
+
+    // If the hostname is present in the url
+    if (urlPath.indexOf(hostname) > -1
+        // do no not apply, if there is a subdomain, or a mailto link
+        && !urlPath.split(hostname)[0].match(/\.|mailto:/)
+        // do not apply, if there is a port after the hostname
+        && urlPath.split(hostname)[1].substring(0, 1) !== ':') {
+        // make link relative to account for possible mismatch in http/https etc, force absolute
+        urlPath = urlPath.split(hostname)[1];
+        urlPath = urlJoin('/', urlPath);
+        absolute = true;
+    }
+    return [urlPath, absolute];
+}
+
+function urlForImageContext(urlPath, data, absolute, secure) {
+    urlPath = data.image;
+    let imagePathRe = new RegExp('^' + getSubdir() + '/' + STATIC_IMAGE_URL_PREFIX);
+    absolute = imagePathRe.test(data.image) ? absolute : false;
+
+    if (absolute) {
+        // Remove the sub-directory from the URL because ghostConfig will add it back.
+        urlPath = urlPath.replace(new RegExp('^' + getSubdir()), '');
+        let baseUrl = getBlogUrl(secure).replace(/\/$/, '');
+        urlPath = baseUrl + urlPath;
+    }
+
+    return urlPath;
+}
+
+function urlForHomeContext(urlPath, secure, absolute, data) {
+    if(absolute) {
+        urlPath = getBlogUrl(secure);
+
+        // CASE: there are cases where urlFor('home') needs to be returned without trailing
+        // slash e. g. the `{{@blog.url}}` helper. See https://github.com/TryGhost/Ghost/issues/8569
+        if (data && data.trailingSlash === false) {
+            urlPath = urlPath.replace(/\/$/, '');
+        }
+    }
+    return urlPath;
+}
+
+function urlForAdminContext(urlPath, absolute) {
+    urlPath = getAdminUrl() || getBlogUrl();
+
+    if (absolute) {
+        urlPath += 'ghost/';
+    } else {
+        urlPath = '/ghost/';
+    }
+    return urlPath;
+}
+
+function urlForApiContext(urlPath, absolute, data) {
+    urlPath = getAdminUrl() || getBlogUrl();
+
+    // CASE: with or without protocol? If your blog url (or admin url) is configured to http, it's still possible that e.g. nginx allows both https+http.
+    // So it depends how you serve your blog. The main focus here is to avoid cors problems.
+    // @TODO: rename cors
+    if (data && data.cors) {
+        if (!urlPath.match(/^https:/)) {
+            urlPath = urlPath.replace(/^.*?:\/\//g, '//');
+        }
+    }
+
+    if (absolute) {
+        urlPath = urlPath.replace(/\/$/, '') + API_PATH;
+    } else {
+        urlPath = API_PATH;
+    }
+    return urlPath;
 }
 
 function isSSL(urlToParse) {
