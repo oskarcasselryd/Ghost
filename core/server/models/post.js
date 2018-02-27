@@ -655,25 +655,27 @@ Post = ghostBookshelf.Model.extend({
         return destroyPost();
     },
 
-    permissible: function permissible(coverage, postModelOrId, action, context, unsafeAttrs, loadedPermissions, hasUserPermission, hasAppPermission) {
+    permissible: function permissible(postModelOrId, action, context, unsafeAttrs, loadedPermissions, hasUserPermission, hasAppPermission, coverage = undefined) {
         var self = this,
             postModel = postModelOrId,
             result = {},
             origArgs, isContributor, isAuthor, isEdit, isAdd, isDestroy;
 
         // ------------ COVERAGE ------------
-        if (_.isNumber(postModelOrId)) { // BRANCH #0
-            coverage[0] = true;
-        }
-        if (_.isString(postModelOrId)) { // BRANCH #1
-            coverage[1] = true;
+        if(coverage) {
+            if (_.isNumber(postModelOrId)) { // BRANCH #0
+                coverage[0] = true;
+            }
+            if (_.isString(postModelOrId)) { // BRANCH #1
+                coverage[1] = true;
+            }
         }
         // ---------------------------------
         // If we passed in an id instead of a model, get the model
         // then check the permissions
         if (_.isNumber(postModelOrId) || _.isString(postModelOrId)) { // BRANCH #0 && // BRANCH #1
             // Grab the original args without the first one
-            origArgs = _.toArray(arguments).slice(2);
+            origArgs = _.toArray(arguments).slice(1);
 
             // Get the actual post model
             return this.findOne({id: postModelOrId, status: 'all'})
@@ -685,7 +687,7 @@ Post = ghostBookshelf.Model.extend({
                     }
 
                     // Build up the original args but substitute with actual model
-                    var newArgs = [coverage, foundPostModel].concat(origArgs);
+                    var newArgs = [foundPostModel].concat(origArgs);
 
                     return self.permissible.apply(self, newArgs);
                 });
@@ -712,17 +714,19 @@ Post = ghostBookshelf.Model.extend({
         }
 
         // ------------ COVERAGE ------------
-        if (loadedPermissions.user) { // BRANCH #2
-            coverage[2] = true;
-        }
-        if (_.some(loadedPermissions.user.roles, {name: 'Contributor'})) { // BRANCH #3
-            coverage[3] = true;
-        }
-        if (loadedPermissions.user) { // BRANCH #4
-            coverage[4] = true;
-        }
-        if (_.some(loadedPermissions.user.roles, {name: 'Author'})) { // BRANCH #5
-            coverage[5] = true;
+        if(coverage) {
+            if (loadedPermissions.user) { // BRANCH #2
+                coverage[2] = true;
+            }
+            if (_.some(loadedPermissions.user.roles, {name: 'Contributor'})) { // BRANCH #3
+                coverage[3] = true;
+            }
+            if (loadedPermissions.user) { // BRANCH #4
+                coverage[4] = true;
+            }
+            if (_.some(loadedPermissions.user.roles, {name: 'Author'})) { // BRANCH #5
+                coverage[5] = true;
+            }
         }
         // ---------------------------------
         isContributor = loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Contributor'}); // BRANCH #2 && #3
@@ -732,38 +736,40 @@ Post = ghostBookshelf.Model.extend({
         isDestroy = (action === 'destroy');
 
         // ------------ COVERAGE ------------
-        if (isContributor) { // BRANCH #6
-            coverage[6] = true;
-        }
-        if (isEdit) { // BRANCH #7
-            coverage[7] = true;
-        }
-        if (isContributor) { // BRANCH #12
-            coverage[12] = true;
-        }
-        if (isAdd) { // BRANCH #13
-            coverage[13] = true;
-        }
-        if (isContributor) { // BRANCH #16
-            coverage[16] = true;
-        }
-        if (isDestroy) { // BRANCH #17
-            coverage[17] = true;
-        }
-        if (isAuthor) { // BRANCH #20
-            coverage[20] = true;
-        }
-        if (isEdit) { // BRANCH #21
-            coverage[21] = true;
-        }
-        if (isAuthor) { // BRANCH #24
-            coverage[24] = true;
-        }
-        if (isAdd) { // BRANCH #25
-            coverage[25] = true;
-        }
-        if (postModel) { // BRANCH #25
-            coverage[26] = true;
+        if(coverage) {
+            if (isContributor) { // BRANCH #6
+                coverage[6] = true;
+            }
+            if (isEdit) { // BRANCH #7
+                coverage[7] = true;
+            }
+            if (isContributor) { // BRANCH #12
+                coverage[12] = true;
+            }
+            if (isAdd) { // BRANCH #13
+                coverage[13] = true;
+            }
+            if (isContributor) { // BRANCH #16
+                coverage[16] = true;
+            }
+            if (isDestroy) { // BRANCH #17
+                coverage[17] = true;
+            }
+            if (isAuthor) { // BRANCH #20
+                coverage[20] = true;
+            }
+            if (isEdit) { // BRANCH #21
+                coverage[21] = true;
+            }
+            if (isAuthor) { // BRANCH #24
+                coverage[24] = true;
+            }
+            if (isAdd) { // BRANCH #25
+                coverage[25] = true;
+            }
+            if (postModel) { // BRANCH #25
+                coverage[26] = true;
+            }
         }
         // ---------------------------------
         if (isContributor && isEdit) { // BRANCH #6 && #7
@@ -772,29 +778,37 @@ Post = ghostBookshelf.Model.extend({
             // ---------------------------------
             hasUserPermission = !isChanging('status');
             // ------------ COVERAGE ------------
-            if (hasUserPermission) { // BRANCH #8
-                coverage[8] = true;
+            if(coverage) {
+                if (hasUserPermission) { // BRANCH #8
+                    coverage[8] = true;
+                }
             }
             // ---------------------------------
             if(hasUserPermission) {
                 hasUserPermission = hasUserPermission && !isChanging('author_id');
                 // ------------ COVERAGE ------------
-                if (hasUserPermission) { // BRANCH #9
-                    coverage[9] = true;
+                if(coverage) {
+                    if (hasUserPermission) { // BRANCH #9
+                        coverage[9] = true;
+                    }
                 }
                 // ---------------------------------
                 if(hasUserPermission) {
                     hasUserPermission = hasUserPermission && isDraft();
                     // ------------ COVERAGE ------------
-                    if (hasUserPermission) { // BRANCH #10
-                        coverage[10] = true;
+                    if(coverage) {
+                        if (hasUserPermission) { // BRANCH #10
+                            coverage[10] = true;
+                        }
                     }
                     // ---------------------------------
                     if(hasUserPermission) {
                         hasUserPermission = hasUserPermission && isCurrentOwner();
                         // ------------ COVERAGE ------------
-                        if (hasUserPermission) { // BRANCH #11
-                            coverage[11] = true;
+                        if(coverage) {
+                            if (hasUserPermission) { // BRANCH #11
+                                coverage[11] = true;
+                            }
                         }
                         // ---------------------------------
                     }
@@ -808,15 +822,19 @@ Post = ghostBookshelf.Model.extend({
             // ---------------------------------
             hasUserPermission = !isPublished();
             // ------------ COVERAGE ------------
-            if (hasUserPermission) { // BRANCH #14
-                coverage[14] = true;
+            if(coverage) {
+                if (hasUserPermission) { // BRANCH #14
+                    coverage[14] = true;
+                }
             }
             // ---------------------------------
             if(hasUserPermission) {
                 hasUserPermission = hasUserPermission && isOwner();
                 // ------------ COVERAGE ------------
-                if (hasUserPermission) { // BRANCH #15
-                    coverage[15] = true;
+                if(coverage) {
+                    if (hasUserPermission) { // BRANCH #15
+                        coverage[15] = true;
+                    }
                 }
                 // ---------------------------------
             }
@@ -828,15 +846,19 @@ Post = ghostBookshelf.Model.extend({
             // ---------------------------------
             hasUserPermission = isCurrentOwner();
             // ------------ COVERAGE ------------
-            if (hasUserPermission) { // BRANCH #18
-                coverage[18] = true;
+            if(coverage) {
+                if (hasUserPermission) { // BRANCH #18
+                    coverage[18] = true;
+                }
             }
             // ---------------------------------
             if(hasUserPermission) {
                 hasUserPermission = hasUserPermission && isDraft();
                 // ------------ COVERAGE ------------
-                if (hasUserPermission) { // BRANCH #19
-                    coverage[19] = true;
+                if(coverage) {
+                    if (hasUserPermission) { // BRANCH #19
+                        coverage[19] = true;
+                    }
                 }
                 // ---------------------------------
             }
@@ -848,15 +870,19 @@ Post = ghostBookshelf.Model.extend({
             // ---------------------------------
             hasUserPermission = isCurrentOwner();
             // ------------ COVERAGE ------------
-            if (hasUserPermission) { // BRANCH #22
-                coverage[22] = true;
+            if(coverage) {
+                if (hasUserPermission) { // BRANCH #22
+                    coverage[22] = true;
+                }
             }
             // ---------------------------------
             if(hasUserPermission) {
                 hasUserPermission = hasUserPermission && !isChanging('author_id');
                 // ------------ COVERAGE ------------
-                if (hasUserPermission) { // BRANCH #23
-                    coverage[23] = true;
+                if(coverage) {
+                    if (hasUserPermission) { // BRANCH #23
+                        coverage[23] = true;
+                    }
                 }
                 // ---------------------------------
             }
@@ -867,14 +893,18 @@ Post = ghostBookshelf.Model.extend({
             hasUserPermission = isOwner();
         } else if (postModel) { // BRANCH #26
             // ------------ COVERAGE ------------
-            if (hasUserPermission) { // BRANCH #28
-                coverage[27] = true;
+            if(coverage) {
+                if (hasUserPermission) { // BRANCH #28
+                    coverage[27] = true;
+                }
             }
             // ---------------------------------
             if(!hasUserPermission) {
                 hasUserPermission = isCurrentOwner();
                 // ------------ COVERAGE ------------
-                coverage[28] = true;
+                if(coverage) {
+                    coverage[28] = true;
+                }
                 // ---------------------------------
             }
             // ORIGINAL code
@@ -883,8 +913,10 @@ Post = ghostBookshelf.Model.extend({
         }
 
         // ------------ COVERAGE ------------
-        if (isContributor) { // BRANCH #29
-            coverage[29] = true;
+        if(coverage) {
+            if (isContributor) { // BRANCH #29
+                coverage[29] = true;
+            }
         }
         // ---------------------------------
         if (isContributor) { // BRANCH #29
@@ -897,11 +929,13 @@ Post = ghostBookshelf.Model.extend({
         }
 
         // ------------ COVERAGE ------------
-        if (hasUserPermission) { // BRANCH #30
-            coverage[30] = true;
-        }
-        if (hasAppPermission) { // BRANCH #31
-            coverage[31] = true;
+        if(coverage) {
+            if (hasUserPermission) { // BRANCH #30
+                coverage[30] = true;
+            }
+            if (hasAppPermission) { // BRANCH #31
+                coverage[31] = true;
+            }
         }
         // ---------------------------------
         if (hasUserPermission && hasAppPermission) { // BRANCH #30 && #31
