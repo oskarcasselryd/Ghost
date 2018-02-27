@@ -128,6 +128,8 @@ function setResponseContext(coverage, req, res, data) {
         // Branch #17 and #18
         coverage[17] = true;
         res.locals.context.push('post');
+    } else {
+        coverage[0] = true;
     }
 }
 
