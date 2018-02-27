@@ -126,9 +126,17 @@ module.exports = function ghost_head(options) { // eslint-disable-line camelcase
             debug('end fetch');
 
             if (context) {
+                console.log('HandleMetaData - Reached branch #1');
+
                 // head is our main array that holds our meta data
-                if (metaData.metaDescription && metaData.metaDescription.length > 0) {
-                    head.push('<meta name="description" content="' + escapeExpression(metaData.metaDescription) + '" />');
+                if (metaData.metaDescription) {
+                    console.log('HandleMetaData - Reached branch #2');
+
+                    if (metaData.metaDescription.length > 0) {
+                        console.log('HandleMetaData - Reached branch #3');
+
+                        head.push('<meta name="description" content="' + escapeExpression(metaData.metaDescription) + '" />');
+                    }
                 }
 
                 head.push('<link rel="shortcut icon" href="' + favicon + '" type="image/' + iconType + '" />');
@@ -137,35 +145,71 @@ module.exports = function ghost_head(options) { // eslint-disable-line camelcase
                 head.push('<meta name="referrer" content="' + referrerPolicy + '" />');
 
                 // show amp link in post when 1. we are not on the amp page and 2. amp is enabled
-                if (_.includes(context, 'post') && !_.includes(context, 'amp') && settingsCache.get('amp')) {
-                    head.push('<link rel="amphtml" href="' +
-                        escapeExpression(metaData.ampUrl) + '" />');
+                if (_.includes(context, 'post')) {
+                    console.log('HandleMetaData - Reached branch #4');
+
+                    if (!_.includes(context, 'amp')) {
+                        console.log('HandleMetaData - Reached branch #5');
+
+                        if (settingsCache.get('amp')) {
+                            console.log('HandleMetaData - Reached branch #6');
+
+                            head.push('<link rel="amphtml" href="' +
+                                escapeExpression(metaData.ampUrl) + '" />');
+                        }
+                    }
                 }
 
                 if (metaData.previousUrl) {
+                    console.log('HandleMetaData - Reached branch #7');
+
                     head.push('<link rel="prev" href="' +
                         escapeExpression(metaData.previousUrl) + '" />');
                 }
 
                 if (metaData.nextUrl) {
+                    console.log('HandleMetaData - Reached branch #8');
+
                     head.push('<link rel="next" href="' +
                         escapeExpression(metaData.nextUrl) + '" />');
                 }
 
-                if (!_.includes(context, 'paged') && useStructuredData) {
-                    head.push('');
-                    head.push.apply(head, finaliseStructuredData(metaData));
-                    head.push('');
+                if (!_.includes(context, 'paged')) {
+                    console.log('HandleMetaData - Reached branch #9');
 
-                    if (metaData.schema) {
-                        head.push('<script type="application/ld+json">\n' +
-                            JSON.stringify(metaData.schema, null, '    ') +
-                            '\n    </script>\n');
+                    if (useStructuredData) {
+                        console.log('HandleMetaData - Reached branch #10');
+
+                        head.push('');
+                        head.push.apply(head, finaliseStructuredData(metaData));
+                        head.push('');
+
+                        if (metaData.schema) {
+                            console.log('HandleMetaData - Reached branch #11');
+
+                            head.push('<script type="application/ld+json">\n' +
+                                JSON.stringify(metaData.schema, null, '    ') +
+                                '\n    </script>\n');
+                        }
                     }
                 }
 
-                if (client && client.id && client.secret && !_.includes(context, 'amp')) {
-                    head.push(getAjaxHelper(client.id, client.secret));
+                if (client) {
+                    console.log('HandleMetaData - Reached branch #12');
+
+                    if (client.id) {
+                        console.log('HandleMetaData - Reached branch #13');
+
+                        if (client.secret) {
+                            console.log('HandleMetaData - Reached branch #14');
+
+                            if (!_.includes(context, 'amp')) {
+                                console.log('HandleMetaData - Reached branch #15');
+
+                                head.push(getAjaxHelper(client.id, client.secret));
+                            }
+                        }
+                    }
                 }
             }
 
@@ -178,11 +222,17 @@ module.exports = function ghost_head(options) { // eslint-disable-line camelcase
 
             // no code injection for amp context!!!
             if (!_.includes(context, 'amp')) {
+                console.log('HandleMetaData - Reached branch #16');
+
                 if (!_.isEmpty(globalCodeinjection)) {
+                    console.log('HandleMetaData - Reached branch #17');
+
                     head.push(globalCodeinjection);
                 }
 
                 if (!_.isEmpty(postCodeInjection)) {
+                    console.log('HandleMetaData - Reached branch #18');
+
                     head.push(postCodeInjection);
                 }
             }
