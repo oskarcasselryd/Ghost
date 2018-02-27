@@ -89,7 +89,7 @@ function setResponseContext(coverage, req, res, data) {
     }
 
     // ---------- COVERAGE ----------
-    if (asubscribePattern.test(res.locals.relativeUrl) && !(labs.isSet('subscribers') === true)) {
+    if (subscribePattern.test(res.locals.relativeUrl) && !(labs.isSet('subscribers') === true)) {
         coverage[13] = true;
     }
 

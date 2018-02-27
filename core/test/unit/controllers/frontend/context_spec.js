@@ -12,12 +12,29 @@ var should = require('should'),
 describe('Contexts', function () {
     var coverage, req, res, data, setupContext;
 
-    beforeEach(function () {
-        coverage = new Array(18); // 21 branches
+    before(function() {
+        coverage = new Array(18); // 18 branches
         for(let i=0; i<18; i++) {
             coverage[i] = false;
         }
 
+    });
+
+    after(function() {
+        var allCovered = true;
+        for(let i=0; i<18; i++) {
+            if (coverage[i] == false) {
+                allCovered = false;
+                console.log("Did not reach branch #" + i);
+            }
+        }
+        if(allCovered) {
+            console.log("All branches covered!");
+        }
+
+    });
+
+    beforeEach(function () {
         req = {
             params: {},
             body: {}
@@ -29,16 +46,6 @@ describe('Contexts', function () {
     });
 
     afterEach(function () {
-        var allCovered = true;
-        for(let i=0; i<18; i++) {
-            if (coverage[i] == false) {
-                allCovered = false;
-                console.log("Did not reach branch #" + i);
-            }
-        }
-        if(allCovered) {
-            console.log("All branches covered!");
-        }
         sandbox.restore();
     });
 
