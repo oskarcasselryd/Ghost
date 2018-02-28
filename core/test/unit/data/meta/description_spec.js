@@ -1,7 +1,24 @@
 var should = require('should'), // jshint ignore:line
-    getMetaDescription = require('../../../../server/data/meta/description');
+    sinon = require('sinon'),
+    getMetaDescription = require('../../../../server/data/meta/description'),
+    settingsCache = require('../../../../server/services/settings/cache'),
+    sandbox = sinon.sandbox.create();
 
 describe('getMetaDescription', function () {
+    let blogDescription = 'My blog description';
+
+    before(function() {
+        sandbox.stub(settingsCache, 'get').callsFake(function (key) {
+            if (key === 'description') {
+                return blogDescription;
+            }
+            return '';
+        });
+    });
+
+    after(function() {
+        sandbox.restore();
+    });
 
     it('should return meta_description if on data root', function () {
         var description = getMetaDescription({
@@ -15,6 +32,14 @@ describe('getMetaDescription', function () {
             context: ['paged']
         });
         description.should.equal('');
+    });
+
+    it('should return blog description if on root context contains home', function () {
+        var description = getMetaDescription({}, {
+            context: ['home']
+        });
+
+        description.should.equal(blogDescription);
     });
 
     it('should not return meta description for author if on root context contains author and no meta description provided', function () {
