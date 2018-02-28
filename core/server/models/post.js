@@ -726,27 +726,54 @@ Post = ghostBookshelf.Model.extend({
             return postModel.get('status') === 'draft';
         }
 
+        function hasUserPermissionIfIsContributor(hasUserPermission, postModel, isEdit, isAdd, isDestroy) {
+            if (isEdit) {
+                // Only allow contributor edit if neither status or author id are changing, and the post is a draft post
+                return !isChanging('status') && !isChanging('author_id') && isDraft() && isCurrentOwner();
+            } else if (isAdd) {
+                // If adding, make sure it's a draft post and has the correct ownership
+                return !isPublished() && isOwner();
+            } else if (isDestroy) {
+                // If destroying, only allow contributor to destroy their own draft posts
+                return isCurrentOwner() && isDraft();
+            } else if (postModel) {
+                return hasUserPermission || isCurrentOwner();
+            } else {
+                return hasUserPermission;
+            }
+        }
+
+        function hasUserPermissionIfIsAuthor(hasUserPermission, postModel, isEdit, isAdd) {
+            if (isEdit) {
+                // Don't allow author to change author ids
+                return isCurrentOwner() && !isChanging('author_id');
+            } else if (isAdd) {
+                // Make sure new post is authored by the current user
+                return isOwner();
+            } else if (postModel) {
+                return hasUserPermission || isCurrentOwner();
+            } else {
+                return hasUserPermission;
+            }
+        }
+
         isContributor = loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Contributor'});
         isAuthor = loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Author'});
         isEdit = (action === 'edit');
         isAdd = (action === 'add');
         isDestroy = (action === 'destroy');
 
-        if (isContributor && isEdit) {
-            // Only allow contributor edit if neither status or author id are changing, and the post is a draft post
-            hasUserPermission = !isChanging('status') && !isChanging('author_id') && isDraft() && isCurrentOwner();
-        } else if (isContributor && isAdd) {
-            // If adding, make sure it's a draft post and has the correct ownership
-            hasUserPermission = !isPublished() && isOwner();
-        } else if (isContributor && isDestroy) {
-            // If destroying, only allow contributor to destroy their own draft posts
-            hasUserPermission = isCurrentOwner() && isDraft();
-        } else if (isAuthor && isEdit) {
+        if (isContributor) {
+            hasUserPermission = hasUserPermissionIfIsContributor(hasUserPermission, postModel, isEdit, isAdd, isDestroy);
+        } /*else if (isAuthor && isEdit) {
             // Don't allow author to change author ids
             hasUserPermission = isCurrentOwner() && !isChanging('author_id');
         } else if (isAuthor && isAdd) {
             // Make sure new post is authored by the current user
             hasUserPermission = isOwner();
+        }*/
+        else if(isAuthor) {
+            hasUserPermission = hasUserPermissionIfIsAuthor(hasUserPermission, postModel, isEdit, isAdd);
         } else if (postModel) {
             hasUserPermission = hasUserPermission || isCurrentOwner();
         }
