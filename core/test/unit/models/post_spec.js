@@ -48,14 +48,14 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'edit',
                         context,
                         unsafeAttrs,
                         utils.permissions.contributor,
                         false,
-                        false
+                        false,
+                        coverage
                     ).then(() => {
                         done(new Error('Permissible function should have rejected.'));
                     }).catch((error) => {
@@ -76,14 +76,14 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'edit',
                         context,
                         unsafeAttrs,
                         utils.permissions.contributor,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then(() => {
                         done(new Error('Permissible function should have rejected.'));
                     }).catch((error) => {
@@ -104,14 +104,14 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'edit',
                         context,
                         unsafeAttrs,
                         utils.permissions.contributor,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then(() => {
                         done(new Error('Permissible function should have rejected.'));
                     }).catch((error) => {
@@ -132,14 +132,14 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(2);
 
                     models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'edit',
                         context,
                         unsafeAttrs,
                         utils.permissions.contributor,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then(() => {
                         done(new Error('Permissible function should have rejected.'));
                     }).catch((error) => {
@@ -185,14 +185,14 @@ describe('Models: Post', function () {
                         unsafeAttrs = {status: 'published', author_id: 1};
 
                     models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'add',
                         context,
                         unsafeAttrs,
                         utils.permissions.contributor,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then(() => {
                         done(new Error('Permissible function should have rejected.'));
                     }).catch((error) => {
@@ -210,14 +210,14 @@ describe('Models: Post', function () {
                         unsafeAttrs = {status: 'draft', author_id: 2};
 
                     models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'add',
                         context,
                         unsafeAttrs,
                         utils.permissions.contributor,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then(() => {
                         done(new Error('Permissible function should have rejected.'));
                     }).catch((error) => {
@@ -235,14 +235,14 @@ describe('Models: Post', function () {
                         unsafeAttrs = {status: 'draft', author_id: 1};
 
                     return models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'add',
                         context,
                         unsafeAttrs,
                         utils.permissions.contributor,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then((result) => {
                         should.exist(result);
                         should(result.excludedAttrs).deepEqual(['tags']);
@@ -261,14 +261,14 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(2);
 
                     models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'destroy',
                         context,
                         {},
                         utils.permissions.contributor,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then(() => {
                         done(new Error('Permissible function should have rejected.'));
                     }).catch((error) => {
@@ -288,14 +288,14 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('status').returns('published');
 
                     models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'destroy',
                         context,
                         {},
                         utils.permissions.contributor,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then(() => {
                         done(new Error('Permissible function should have rejected.'));
                     }).catch((error) => {
@@ -315,14 +315,14 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     return models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'destroy',
                         context,
                         {},
                         utils.permissions.contributor,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then((result) => {
                         should.exist(result);
                         should(result.excludedAttrs).deepEqual(['tags']);
@@ -344,14 +344,14 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(2);
 
                     models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'edit',
                         context,
                         unsafeAttrs,
                         utils.permissions.author,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then(() => {
                         done(new Error('Permissible function should have rejected.'));
                     }).catch((error) => {
@@ -371,14 +371,14 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'edit',
                         context,
                         unsafeAttrs,
                         utils.permissions.author,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then(() => {
                         done(new Error('Permissible function should have rejected.'));
                     }).catch((error) => {
@@ -398,14 +398,14 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     return models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'edit',
                         context,
                         unsafeAttrs,
                         utils.permissions.author,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then(() => {
                         should(mockPostObj.get.calledTwice).be.true();
                     });
@@ -421,14 +421,14 @@ describe('Models: Post', function () {
                         unsafeAttrs = {author_id: 2};
 
                     models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'add',
                         context,
                         unsafeAttrs,
                         utils.permissions.author,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then(() => {
                         done(new Error('Permissible function should have rejected.'));
                     }).catch((error) => {
@@ -446,14 +446,14 @@ describe('Models: Post', function () {
                         unsafeAttrs = {author_id: 1};
 
                     return models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'add',
                         context,
                         unsafeAttrs,
                         utils.permissions.author,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then(() => {
                         should(mockPostObj.get.called).be.false();
                     });
@@ -472,14 +472,14 @@ describe('Models: Post', function () {
                 mockPostObj.get.withArgs('author_id').returns(2);
 
                 models.Post.permissible(
-                    coverage,
                     mockPostObj,
                     'edit',
                     context,
                     unsafeAttrs,
                     utils.permissions.editor,
                     false,
-                    true
+                    true,
+                    coverage
                 ).then(() => {
                     done(new Error('Permissible function should have rejected.'));
                 }).catch((error) => {
@@ -499,14 +499,14 @@ describe('Models: Post', function () {
                 mockPostObj.get.withArgs('author_id').returns(2);
 
                 return models.Post.permissible(
-                    coverage,
                     mockPostObj,
                     'edit',
                     context,
                     unsafeAttrs,
                     utils.permissions.editor,
                     true,
-                    true
+                    true,
+                    coverage
                 ).then(() => {
                     should(mockPostObj.get.called).be.false();
                 });
@@ -524,14 +524,14 @@ describe('Models: Post', function () {
                 sandbox.stub(models.Post, 'findOne').resolves(mockPostObj);
 
                 return models.Post.permissible(
-                    coverage,
                     '1',
                     'edit',
                     context,
                     unsafeAttrs,
                     utils.permissions.editor,
                     true,
-                    true
+                    true,
+                    coverage
                 ).then(() => {
                     should(mockPostObj.get.called).be.false();
                     sandbox.restore();
@@ -548,14 +548,14 @@ describe('Models: Post', function () {
                 sandbox.stub(models.Post, 'findOne').resolves(mockPostObj);
 
                 return models.Post.permissible(
-                    coverage,
                     1,
                     'edit',
                     context,
                     unsafeAttrs,
                     utils.permissions.editor,
                     true,
-                    true
+                    true,
+                    coverage
                 ).then(() => {
                     should(mockPostObj.get.called).be.false();
                     sandbox.restore();
