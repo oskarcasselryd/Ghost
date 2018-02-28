@@ -1181,19 +1181,7 @@ describe('Post Model', function () {
                     done();
                 });
             });
-            it('add scheduled post with published_at as an invalid time-> we expect an error', function (done) {
-              PostModel.add({
-                      status: 'scheduled',
-                      title: 'scheduled 1',
-                      published_at: moment([2015, 25, 35]),
-                      mobiledoc: markdownToMobiledoc('This is some content')
-                  }, context).catch(function (err) {
-                      should.exist(err);
-                      (err instanceof common.errors.ValidationError).should.eql(true);
-                      Object.keys(eventsTriggered).length.should.eql(0);
-                      done();
-                  });
-            });
+
             it('add scheduled post with published_at not in future-> we expect an error', function (done) {
                 PostModel.add({
                     status: 'scheduled',
