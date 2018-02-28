@@ -829,13 +829,13 @@ Post = ghostBookshelf.Model.extend({
             if (loadedPermissions.user) { // BRANCH #2
                 coverage[2] = true;
             }
-            if (_.some(loadedPermissions.user.roles, {name: 'Contributor'})) { // BRANCH #3
+            if (loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Contributor'})) { // BRANCH #3
                 coverage[3] = true;
             }
             if (loadedPermissions.user) { // BRANCH #4
                 coverage[4] = true;
             }
-            if (_.some(loadedPermissions.user.roles, {name: 'Author'})) { // BRANCH #5
+            if (loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Author'})) { // BRANCH #5
                 coverage[5] = true;
             }
         }

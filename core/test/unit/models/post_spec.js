@@ -160,14 +160,14 @@ describe('Models: Post', function () {
                     mockPostObj.get.withArgs('author_id').returns(1);
 
                     return models.Post.permissible(
-                        coverage,
                         mockPostObj,
                         'edit',
                         context,
                         unsafeAttrs,
                         utils.permissions.contributor,
                         false,
-                        true
+                        true,
+                        coverage
                     ).then((result) => {
                         should.exist(result);
                         should(result.excludedAttrs).deepEqual(['tags']);
