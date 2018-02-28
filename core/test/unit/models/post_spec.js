@@ -471,5 +471,54 @@ describe('Models: Post', function () {
                 });
             });
         });
+
+        describe('findOne', function () {
+            it('converts string id to post model then resolves if hasUserPermission is true', function () {
+                var mockPostObj = {
+                        get: sandbox.stub()
+                    },
+                    context = {user: 1},
+                    unsafeAttrs = {author_id: 2};
+
+                sandbox.stub(models.Post, 'findOne').resolves(mockPostObj);
+
+                return models.Post.permissible(
+                    '1',
+                    'edit',
+                    context,
+                    unsafeAttrs,
+                    utils.permissions.editor,
+                    true,
+                    true
+                ).then(() => {
+                    should(mockPostObj.get.called).be.false();
+                    sandbox.restore();
+                });
+            });
+
+            it('converts number id to post model then resolves if hasUserPermission is true', function () {
+                var mockPostObj = {
+                        get: sandbox.stub()
+                    },
+                    context = {user: 1},
+                    unsafeAttrs = {author_id: 2};
+
+                sandbox.stub(models.Post, 'findOne').resolves(mockPostObj);
+
+                return models.Post.permissible(
+                    1,
+                    'edit',
+                    context,
+                    unsafeAttrs,
+                    utils.permissions.editor,
+                    true,
+                    true
+                ).then(() => {
+                    should(mockPostObj.get.called).be.false();
+                    sandbox.restore();
+                });
+            });
+        });
+
     });
 });
