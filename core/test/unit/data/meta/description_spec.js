@@ -2,17 +2,43 @@ var should = require('should'), // jshint ignore:line
     getMetaDescription = require('../../../../server/data/meta/description');
 
 describe('getMetaDescription', function () {
+    var coverage;
+
+    before(function() {
+        coverage = new Array(21); // 21 branches
+        for(let i=0; i<21; i++) {
+            coverage[i] = false;
+        }
+
+    });
+
+    after(function() {
+        var allCovered = true;
+        for(let i=0; i<21; i++) {
+            if (coverage[i] == false) {
+                allCovered = false;
+                console.log("Did not reach branch #" + i);
+            }
+        }
+        if(allCovered) {
+            console.log("All branches covered!");
+        }
+
+    });
+        //
+
+
     it('should return meta_description if on data root', function () {
         var description = getMetaDescription({
             meta_description: 'My test description.'
-        });
+        }, undefined, undefined, coverage);
         description.should.equal('My test description.');
     });
 
     it('should return empty string if on root context contains paged', function () {
         var description = getMetaDescription({}, {
             context: ['paged']
-        });
+        }, undefined, coverage);
         description.should.equal('');
     });
 
@@ -23,7 +49,7 @@ describe('getMetaDescription', function () {
             }
         }, {
             context: ['author']
-        });
+        }, undefined, coverage);
         description.should.equal('');
     });
 
@@ -35,7 +61,7 @@ describe('getMetaDescription', function () {
             }
         }, {
             context: ['author']
-        });
+        }, undefined, coverage);
         description.should.equal('Author meta description.');
     });
 
@@ -46,7 +72,7 @@ describe('getMetaDescription', function () {
             }
         }, {
             context: ['tag']
-        });
+        }, undefined, coverage);
         description.should.equal('Best tag ever!');
     });
 
@@ -58,7 +84,7 @@ describe('getMetaDescription', function () {
             }
         }, {
             context: ['tag']
-        });
+        }, undefined, coverage);
         description.should.equal('');
     });
 
@@ -69,7 +95,7 @@ describe('getMetaDescription', function () {
             }
         }, {
             context: ['post']
-        });
+        }, undefined, coverage);
         description.should.equal('Best post ever!');
     });
 
@@ -83,7 +109,7 @@ describe('getMetaDescription', function () {
             context: ['post']
         }, {
             property: 'og'
-        });
+        }, coverage);
         description.should.equal('My custom Facebook description!');
     });
 
@@ -97,7 +123,7 @@ describe('getMetaDescription', function () {
             context: ['post']
         }, {
             property: 'og'
-        });
+        }, coverage);
         description.should.equal('');
     });
 
@@ -111,7 +137,7 @@ describe('getMetaDescription', function () {
             context: ['post']
         }, {
             property: 'twitter'
-        });
+        }, coverage);
         description.should.equal('My custom Twitter description!');
     });
 
@@ -122,7 +148,7 @@ describe('getMetaDescription', function () {
             }
         }, {
             context: ['amp', 'post']
-        });
+        }, undefined, coverage);
         description.should.equal('Best AMP post ever!');
     });
 
@@ -133,7 +159,7 @@ describe('getMetaDescription', function () {
             }
         }, {
             context: ['page']
-        });
+        }, undefined, coverage);
         description.should.equal('Best page ever!');
     });
 });

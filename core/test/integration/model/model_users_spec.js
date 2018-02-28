@@ -12,6 +12,7 @@ var should = require('should'),
     context = testUtils.context.admin,
     sandbox = sinon.sandbox.create();
 
+
 describe('User Model', function run() {
     var eventsTriggered = {};
 
@@ -701,4 +702,5 @@ describe('User Model', function run() {
                 });
         });
     });
+
 });
