@@ -133,6 +133,26 @@ describe('{{body_class}} helper', function () {
             rendered.string.should.equal('post-template tag-foo tag-bar');
         });
 
+        it("post with tags on the body", function() {
+            var rendered = callBodyClassWithContext(["post"], {
+                relativeUrl: "/my-awesome-post/",
+                tags: [{ slug: "foo" }, { slug: "bar" }],
+                post: { slug: "post" }
+            });
+
+            rendered.string.should.equal("post-template tag-foo tag-bar");
+        });
+
+        it("post with page on the body", function() {
+            var rendered = callBodyClassWithContext(["post"], {
+                relativeUrl: "/my-awesome-post/",
+                page: { slug: "foo" },
+                post: { slug: "post" }
+            });
+
+            rendered.string.should.equal("post-template");
+        });
+
         it('a static page', function () {
             var rendered = callBodyClassWithContext(
                 ['page'],
