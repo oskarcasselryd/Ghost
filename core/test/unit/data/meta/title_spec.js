@@ -128,8 +128,7 @@ describe('getTitle', function () {
         coverage = ret[1];
         title.should.equal('The test title');
     });
-
-        meta_title: 'My test title'
+    
     it('should return tag meta_title if in tag data', function () {
         var ret = getTitle({
             tag: {
