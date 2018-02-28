@@ -1,12 +1,41 @@
 var _ = require('lodash'),
     settingsCache = require('../../services/settings/cache');
 
+
+function getTitleForTag(context, data, blogTitle, pageString) {
+    // Tag title, paged
+    if(_.includes(context, 'paged')) {
+        return data.tag.meta_title || data.tag.name + ' - ' + blogTitle + pageString;
+    // Tag title, index
+    } else {
+        return data.tag.meta_title || data.tag.name + ' - ' + blogTitle;
+    }
+}
+
+function getTitleForAuthor(context, data, blogTitle, pageString) {
+    // Author title, paged
+    if(_.includes(context, 'paged')) {
+        return data.author.name + ' - ' + blogTitle + pageString;
+    // Author title, index
+    } else {
+        return data.author.name + ' - ' + blogTitle;
+    }
+}
+
+function getContext(root) {
+    return root ? root.context : null;
+}
+
+function getPagination(root) {
+    return root ? root.pagination : null;
+}
+
 function getTitle(data, root, options) {
     var title = '',
-        context = root ? root.context : null,
+        context = getContext(root),
         postSdTitle,
         blogTitle = settingsCache.get('title'),
-        pagination = root ? root.pagination : null,
+        pagination = getPagination(root),
         pageString = '';
 
     options = options ? options : {};
@@ -21,18 +50,12 @@ function getTitle(data, root, options) {
     // Home title
     } else if (_.includes(context, 'home')) {
         title = blogTitle;
-    // Author title, paged
-    } else if (_.includes(context, 'author') && data.author && _.includes(context, 'paged')) {
-        title = data.author.name + ' - ' + blogTitle + pageString;
-    // Author title, index
+    // Author title
     } else if (_.includes(context, 'author') && data.author) {
-        title = data.author.name + ' - ' + blogTitle;
-    // Tag title, paged
-    } else if (_.includes(context, 'tag') && data.tag && _.includes(context, 'paged')) {
-        title = data.tag.meta_title || data.tag.name + ' - ' + blogTitle + pageString;
-    // Tag title, index
+        title = getTitleForAuthor(context, data, blogTitle, pageString);
+    // Tag title
     } else if (_.includes(context, 'tag') && data.tag) {
-        title = data.tag.meta_title || data.tag.name + ' - ' + blogTitle;
+        title = getTitleForTag(context, data, blogTitle, pageString);
     // Post title
     } else if ((_.includes(context, 'post') || _.includes(context, 'page')) && data.post) {
         if (options && options.property) {
