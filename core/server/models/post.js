@@ -189,7 +189,7 @@ Post = ghostBookshelf.Model.extend({
         if(olderStatus === 'published') {
           //console.log("b04");
           coverage[3]=true;
-          //console.log(coverage);
+          console.log(coverage);
           return Promise.reject(new common.errors.ValidationError({
             message: common.i18n.t('errors.models.post.isAlreadyPublished', {key: 'status'})
           }));
@@ -204,7 +204,7 @@ Post = ghostBookshelf.Model.extend({
       if (!publishedAt) {
         //console.log("b06");
         coverage[5]=true;
-        //console.log(coverage);
+        console.log(coverage);
         return Promise.reject(new common.errors.ValidationError({
           message: common.i18n.t('errors.models.post.valueCannotBeBlank', {key: 'published_at'})
         }));
@@ -212,7 +212,7 @@ Post = ghostBookshelf.Model.extend({
       if (!moment(publishedAt).isValid()) {
         //console.log("b07");
         coverage[6]=true;
-        //console.log(coverage);
+        console.log(coverage);
         return Promise.reject(new common.errors.ValidationError({
           message: common.i18n.t('errors.models.post.valueCannotBeBlank', {key: 'published_at'})
         }));
@@ -227,7 +227,7 @@ Post = ghostBookshelf.Model.extend({
           if(!options.importing){
             //console.log("b10");
             coverage[9]=true;
-            //console.log(coverage);
+            console.log(coverage);
             return Promise.reject(new common.errors.ValidationError({
               message: common.i18n.t('errors.models.post.expectedPublishedAtInFuture', {
                 cannotScheduleAPostBeforeInMinutes: config.get('times').cannotScheduleAPostBeforeInMinutes
@@ -409,7 +409,7 @@ Post = ghostBookshelf.Model.extend({
 
       //console.log("b30");
       coverage[29]=true;
-      //console.log(coverage);
+      console.log(coverage);
       return sequence(ops);
     },
 
