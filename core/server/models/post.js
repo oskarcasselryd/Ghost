@@ -1053,71 +1053,9 @@ Post = ghostBookshelf.Model.extend({
             return Promise.resolve(result);
         }
 
-          return self.permissible.apply(self, newArgs);
-        });
-      }
-
-      function isChanging(attr) {
-        return unsafeAttrs[attr] && unsafeAttrs[attr] !== postModel.get(attr);
-      }
-
-      function isOwner() {
-        return unsafeAttrs.author_id && unsafeAttrs.author_id === context.user;
-      }
-
-      function isCurrentOwner() {
-        return context.user === postModel.get('author_id');
-      }
-
-      function isPublished() {
-        return unsafeAttrs.status && unsafeAttrs.status !== 'draft';
-      }
-
-      function isDraft() {
-        return postModel.get('status') === 'draft';
-      }
-
-      isContributor = loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Contributor'});
-      isAuthor = loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Author'});
-      isEdit = (action === 'edit');
-      isAdd = (action === 'add');
-      isDestroy = (action === 'destroy');
-
-      if (isContributor && isEdit) {
-        // Only allow contributor edit if neither status or author id are changing, and the post is a draft post
-        hasUserPermission = !isChanging('status') && !isChanging('author_id') && isDraft() && isCurrentOwner();
-      } else if (isContributor && isAdd) {
-        // If adding, make sure it's a draft post and has the correct ownership
-        hasUserPermission = !isPublished() && isOwner();
-      } else if (isContributor && isDestroy) {
-        // If destroying, only allow contributor to destroy their own draft posts
-        hasUserPermission = isCurrentOwner() && isDraft();
-      } else if (isAuthor && isEdit) {
-        // Don't allow author to change author ids
-        hasUserPermission = isCurrentOwner() && !isChanging('author_id');
-      } else if (isAuthor && isAdd) {
-        // Make sure new post is authored by the current user
-        hasUserPermission = isOwner();
-      } else if (postModel) {
-        hasUserPermission = hasUserPermission || isCurrentOwner();
-      }
-
-      if (isContributor) {
-        // Note: at the moment primary_tag is a computed field,
-        // meaning we don't add it to this list. However, if the primary_tag
-        // ever becomes a db field rather than a computed field, add it to this list
-        //
-        // TODO: once contribitors are able to edit existing tags, this can be removed
-        result.excludedAttrs = ['tags'];
-      }
-
-      if (hasUserPermission && hasAppPermission) {
-        return Promise.resolve(result);
-      }
-
-      return Promise.reject(new common.errors.NoPermissionError({message: common.i18n.t('errors.models.post.notEnoughPermission')}));
+        return Promise.reject(new common.errors.NoPermissionError({message: common.i18n.t('errors.models.post.notEnoughPermission')}));
     }
-  });
+});
 
   Posts = ghostBookshelf.Collection.extend({
     model: Post
