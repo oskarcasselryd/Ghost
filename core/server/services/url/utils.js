@@ -229,12 +229,13 @@ function urlPathForPost(post) {
 // E.g. if post object represents welcome post, and slugs are set to date
 // urlFor('post', {...}) -> /2014/01/01/welcome-to-ghost/
 // Parameters:
-// - context - a string, or json object describing the context for which you need a url
-// - data (optional) - a json object containing data needed to generate a url
+// - context (optional, default: '') - a string, or json object describing the context for which you need a url
+// - data (optional, default: {}) - a json object containing data needed to generate a url
 // - absolute (optional, default:false) - boolean whether or not the url should be absolute
+// - coverage (optional, default: []) - only used for coverage tests
 // This is probably not the right place for this, but it's the best place for now
 // @TODO: rewrite, very hard to read, create private functions!
-function urlFor(context, data, absolute) {
+function urlFor(context = '', data = {}, absolute = false, coverage = []) {
     var urlPath = '/',
         secure, imagePathRe,
         knownObjects = ['post', 'tag', 'author', 'image', 'nav'], baseUrl,
@@ -250,32 +251,136 @@ function urlFor(context, data, absolute) {
 
     // Make data properly optional
     if (_.isBoolean(data)) {
+        coverage[0] = true;
+
         absolute = data;
         data = null;
     }
 
     // Can pass 'secure' flag in either context or data arg
-    secure = (context && context.secure) || (data && data.secure);
+    var isContextSecure = context;
+    if (isContextSecure) {
+        coverage[1] = true;
 
-    if (_.isObject(context) && context.relativeUrl) {
+        isContextSecure = context.secure;
+    }
+
+    var isDataSecure = data;
+    if (isDataSecure) {
+        coverage[3] = true;
+
+        isDataSecure = data.secure;
+    }
+
+    if (isContextSecure) {
+        secure = isContextSecure;
+    } else {
+        coverage[2] = true;
+
+        secure = isDataSecure;
+    }
+
+    var isRelative = _.isObject(context);
+    if (isRelative) {
+        coverage[4] = true;
+
+        isRelative = context.relativeUrl;
+    }
+
+    var contextIsKnownObject = _.isString(context);
+    if (contextIsKnownObject) {
+        coverage[6] = true;
+
+        contextIsKnownObject = _.indexOf(knownObjects, context) !== -1;
+    }
+
+    var isHomeAndAbsolute = context === 'home';
+    if (isHomeAndAbsolute) {
+        coverage[24] = true;
+
+        isHomeAndAbsolute = absolute;
+    }
+
+    var contextIsKnownPath = _.isString(context);
+    if (contextIsKnownPath) {
+        coverage[37] = true;
+
+        contextIsKnownPath = _.indexOf(_.keys(knownPaths), context) !== -1;
+    }
+
+    if (isRelative) {
+        coverage[5] = true;
+
         urlPath = context.relativeUrl;
-    } else if (_.isString(context) && _.indexOf(knownObjects, context) !== -1) {
+    } else if (contextIsKnownObject) {
+        coverage[7] = true;
+
+        var isPost = context === 'post';
+        if (isPost) {
+            coverage[8] = true;
+
+            isPost = data.post;
+        }
+
+        var isTag = context === 'tag';
+        if (isTag) {
+            coverage[10] = true;
+
+            isTag = data.tag;
+        }
+
+        var isAuthor = context === 'author';
+        if (isAuthor) {
+            coverage[12] = true;
+
+            isAuthor = data.author;
+        }
+
+        var isImage = context === 'image';
+        if (isImage) {
+            coverage[14] = true;
+
+            isImage = data.image;
+        }
+
+        var isNav = context === 'nav';
+        if (isNav) {
+            coverage[18] = true;
+
+            isNav = data.nav;
+        }
+
         // trying to create a url for an object
-        if (context === 'post' && data.post) {
+        if (isPost) {
+            coverage[9] = true;
+
             urlPath = data.post.url;
             secure = data.secure;
-        } else if (context === 'tag' && data.tag) {
+        } else if (isTag) {
+            coverage[11] = true;
+
             urlPath = urlJoin('/', config.get('routeKeywords').tag, data.tag.slug, '/');
             secure = data.tag.secure;
-        } else if (context === 'author' && data.author) {
+        } else if (isAuthor) {
+            coverage[13] = true;
+
             urlPath = urlJoin('/', config.get('routeKeywords').author, data.author.slug, '/');
             secure = data.author.secure;
-        } else if (context === 'image' && data.image) {
+        } else if (isImage) {
+            coverage[15] = true;
+
             urlPath = data.image;
             imagePathRe = new RegExp('^' + getSubdir() + '/' + STATIC_IMAGE_URL_PREFIX);
-            absolute = imagePathRe.test(data.image) ? absolute : false;
+
+            if (!imagePathRe.test(data.image)) {
+                coverage[16] = true;
+
+                absolute = false;
+            }
 
             if (absolute) {
+                coverage[17] = true;
+
                 // Remove the sub-directory from the URL because ghostConfig will add it back.
                 urlPath = urlPath.replace(new RegExp('^' + getSubdir()), '');
                 baseUrl = getBlogUrl(secure).replace(/\/$/, '');
@@ -283,66 +388,133 @@ function urlFor(context, data, absolute) {
             }
 
             return urlPath;
-        } else if (context === 'nav' && data.nav) {
+        } else if (isNav) {
+            coverage[19] = true;
+
             urlPath = data.nav.url;
-            secure = data.nav.secure || secure;
+
+            if (data.nav.secure) {
+                coverage[20] = true;
+
+                secure = data.nav.secure;
+            }
+
             baseUrl = getBlogUrl(secure);
             hostname = baseUrl.split('//')[1];
 
             // If the hostname is present in the url
-            if (urlPath.indexOf(hostname) > -1
+            if (urlPath.indexOf(hostname) > -1) {
+                coverage[21] = true;
+
                 // do no not apply, if there is a subdomain, or a mailto link
-                && !urlPath.split(hostname)[0].match(/\.|mailto:/)
-                // do not apply, if there is a port after the hostname
-                && urlPath.split(hostname)[1].substring(0, 1) !== ':') {
-                // make link relative to account for possible mismatch in http/https etc, force absolute
-                urlPath = urlPath.split(hostname)[1];
-                urlPath = urlJoin('/', urlPath);
-                absolute = true;
+                if (!urlPath.split(hostname)[0].match(/\.|mailto:/)) {
+                    coverage[22] = true;
+
+                    // do not apply, if there is a port after the hostname
+                    if(urlPath.split(hostname)[1].substring(0, 1) !== ':') {
+                        coverage[23] = true;
+
+                        // make link relative to account for possible mismatch in http/https etc, force absolute
+                        urlPath = urlPath.split(hostname)[1];
+                        urlPath = urlJoin('/', urlPath);
+                        absolute = true;
+                    }
+                }
             }
         }
-    } else if (context === 'home' && absolute) {
+    } else if (isHomeAndAbsolute) {
+        coverage[25] = true;
+
         urlPath = getBlogUrl(secure);
 
         // CASE: there are cases where urlFor('home') needs to be returned without trailing
         // slash e. g. the `{{@blog.url}}` helper. See https://github.com/TryGhost/Ghost/issues/8569
-        if (data && data.trailingSlash === false) {
-            urlPath = urlPath.replace(/\/$/, '');
+        if (data) {
+            coverage[26] = true;
+
+            if (data.trailingSlash === false) {
+                coverage[27] = true;
+
+                urlPath = urlPath.replace(/\/$/, '');
+            }
         }
     } else if (context === 'admin') {
-        urlPath = getAdminUrl() || getBlogUrl();
+        coverage[28] = true;
+
+        if (getAdminUrl()) {
+            coverage[29] = true;
+
+            urlPath = getAdminUrl();
+        } else {
+            urlPath = getBlogUrl();
+        }
 
         if (absolute) {
+            coverage[30] = true;
+
             urlPath += 'ghost/';
         } else {
             urlPath = '/ghost/';
         }
     } else if (context === 'api') {
-        urlPath = getAdminUrl() || getBlogUrl();
+        coverage[31] = true;
+
+        if (getAdminUrl()) {
+            coverage[32] = true;
+
+            urlPath = getAdminUrl();
+        } else {
+            urlPath = getBlogUrl();
+        }
 
         // CASE: with or without protocol? If your blog url (or admin url) is configured to http, it's still possible that e.g. nginx allows both https+http.
         // So it depends how you serve your blog. The main focus here is to avoid cors problems.
         // @TODO: rename cors
-        if (data && data.cors) {
-            if (!urlPath.match(/^https:/)) {
-                urlPath = urlPath.replace(/^.*?:\/\//g, '//');
+        if (data) {
+            coverage[33] = true;
+
+            if (data.cors) {
+                coverage[34] = true;
+
+                if (!urlPath.match(/^https:/)) {
+                    coverage[35] = true;
+
+                    urlPath = urlPath.replace(/^.*?:\/\//g, '//');
+                }
             }
         }
 
         if (absolute) {
+            coverage[36] = true;
+
             urlPath = urlPath.replace(/\/$/, '') + API_PATH;
         } else {
             urlPath = API_PATH;
         }
-    } else if (_.isString(context) && _.indexOf(_.keys(knownPaths), context) !== -1) {
+    } else if (contextIsKnownPath) {
+        coverage[38] = true;
+
         // trying to create a url for a named path
         urlPath = knownPaths[context];
     }
 
     // This url already has a protocol so is likely an external url to be returned
     // or it is an alternative scheme, protocol-less, or an anchor-only path
-    if (urlPath && (urlPath.indexOf('://') !== -1 || urlPath.match(/^(\/\/|#|[a-zA-Z0-9\-]+:)/))) {
-        return urlPath;
+    if (urlPath) {
+        coverage[39] = true;
+
+        var urlPathBool = urlPath.indexOf('://') !== -1;
+        if (urlPathBool) {
+            coverage[40] = true;
+        } else {
+            urlPathBool = urlPath.match(/^(\/\/|#|[a-zA-Z0-9\-]+:)/);
+        }
+
+        if (urlPathBool) {
+            coverage[41] = true;
+
+            return urlPath;
+        }
     }
 
     return createUrl(urlPath, absolute, secure);
