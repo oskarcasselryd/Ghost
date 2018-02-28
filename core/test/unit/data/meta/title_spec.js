@@ -92,6 +92,24 @@ describe('getTitle', function () {
 
         title.should.equal('Tag Name - My blog title 3 (Page 39)');
     });
+    it('MINE: should return tag meta_title - blog title if on data tag page meta_title (Page #)', function () {
+        localSettingsCache.title = 'My blog title 3';
+
+        var title = getTitle({
+            tag: {
+                name: 'Tag Name',
+                meta_title: 'The test title'
+            }
+        }, {
+            context: ['tag', 'paged'],
+            pagination: {
+                total: 40,
+                page: 39
+            }
+        });
+
+        title.should.equal('The test title');
+    });
 
     it('should return tag meta_title if in tag data', function () {
         var title = getTitle({
