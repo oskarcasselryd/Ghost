@@ -2,6 +2,7 @@ var should = require('should'), // jshint ignore:line
     getMetaDescription = require('../../../../server/data/meta/description');
 
 describe('getMetaDescription', function () {
+
     it('should return meta_description if on data root', function () {
         var description = getMetaDescription({
             meta_description: 'My test description.'
@@ -22,6 +23,13 @@ describe('getMetaDescription', function () {
                 bio: 'Just some hack building code to make the world better.'
             }
         }, {
+            context: ['author']
+        });
+        description.should.equal('');
+    });
+
+    it('should not return meta description for author if on root context contains author and no meta description provided', function () {
+        var description = getMetaDescription({}, {
             context: ['author']
         });
         description.should.equal('');
@@ -57,6 +65,13 @@ describe('getMetaDescription', function () {
                 description: 'The normal description'
             }
         }, {
+            context: ['tag']
+        });
+        description.should.equal('');
+    });
+
+    it('should not return data tag description if no meta description for tag', function () {
+        var description = getMetaDescription({}, {
             context: ['tag']
         });
         description.should.equal('');
@@ -135,5 +150,12 @@ describe('getMetaDescription', function () {
             context: ['page']
         });
         description.should.equal('Best page ever!');
+    });
+
+    it('should not return data post meta description if on root context contains page', function () {
+        var description = getMetaDescription({}, {
+            context: ['page']
+        });
+        description.should.equal('');
     });
 });
