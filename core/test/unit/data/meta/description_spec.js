@@ -1,8 +1,12 @@
 var should = require('should'), // jshint ignore:line
-    getMetaDescription = require('../../../../server/data/meta/description');
+    sinon = require('sinon'),
+    getMetaDescription = require('../../../../server/data/meta/description'),
+    settingsCache = require('../../../../server/services/settings/cache'),
+    sandbox = sinon.sandbox.create();
 
 describe('getMetaDescription', function () {
     var coverage;
+    let blogDescription = 'My blog description';
 
     before(function() {
         coverage = new Array(20); // 21 branches
@@ -10,6 +14,12 @@ describe('getMetaDescription', function () {
             coverage[i] = false;
         }
 
+        sandbox.stub(settingsCache, 'get').callsFake(function (key) {
+            if (key === 'description') {
+                return blogDescription;
+            }
+            return '';
+        });
     });
 
     after(function() {
@@ -24,6 +34,7 @@ describe('getMetaDescription', function () {
             console.log("All branches covered!");
         }
 
+        sandbox.restore()
     });
         //
 
@@ -40,6 +51,14 @@ describe('getMetaDescription', function () {
             context: ['paged']
         }, undefined, coverage);
         description.should.equal('');
+    });
+
+    it('should return blog description if on root context contains home', function () {
+        var description = getMetaDescription({}, {
+            context: ['home']
+        }, undefined, coverage);
+
+        description.should.equal(blogDescription);
     });
 
     it('should not return meta description for author if on root context contains author and no meta description provided', function () {
