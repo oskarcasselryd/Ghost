@@ -586,6 +586,34 @@ User = ghostBookshelf.Model.extend({
             userModel = userModelOrId,
             origArgs;
 
+        function actionEdit(context, userModel, loadedPermissions, hasUserPermission) {
+            // Users with the role 'Editor', 'Author', and 'Contributor' have complex permissions when the action === 'edit'
+            // We now have all the info we need to construct the permissions
+
+            if (context.user === userModel.get('id')) {
+                // If this is the same user that requests the operation allow it.
+                return true;
+            } else if (loadedPermissions.user && userModel.hasRole('Owner')) {
+                // Owner can only be edited by owner
+                return loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Owner'});
+            } else if (loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Editor'})) {
+                // If the user we are trying to edit is an Author or Contributor, allow it
+                return userModel.hasRole('Author') || userModel.hasRole('Contributor');
+            } else {
+                return hasUserPermission;
+            }
+        }
+
+        function actionDestroy(context, userModel, loadedPermissions, hasUserPermission) {
+            // Users with the role 'Editor' have complex permissions when the action === 'destroy'
+            if (loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Editor'})) {
+                // Alternatively, if the user we are trying to edit is an Author, allow it
+                return context.user === userModel.get('id') || userModel.hasRole('Author') || userModel.hasRole('Contributor');
+            } else {
+                return hasUserPermission;
+            }
+        }
+
         // If we passed in a model without its related roles, we need to fetch it again
         if (_.isObject(userModelOrId) && !_.isObject(userModelOrId.related('roles'))) {
             userModelOrId = userModelOrId.id;
@@ -614,19 +642,7 @@ User = ghostBookshelf.Model.extend({
         }
 
         if (action === 'edit') {
-            // Users with the role 'Editor', 'Author', and 'Contributor' have complex permissions when the action === 'edit'
-            // We now have all the info we need to construct the permissions
-
-            if (context.user === userModel.get('id')) {
-                // If this is the same user that requests the operation allow it.
-                hasUserPermission = true;
-            } else if (loadedPermissions.user && userModel.hasRole('Owner')) {
-                // Owner can only be edited by owner
-                hasUserPermission = loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Owner'});
-            } else if (loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Editor'})) {
-                // If the user we are trying to edit is an Author or Contributor, allow it
-                hasUserPermission = userModel.hasRole('Author') || userModel.hasRole('Contributor');
-            }
+            hasUserPermission = actionEdit(context, userModel, loadedPermissions, hasUserPermission);
         }
 
         if (action === 'destroy') {
@@ -635,11 +651,7 @@ User = ghostBookshelf.Model.extend({
                 return Promise.reject(new common.errors.NoPermissionError({message: common.i18n.t('errors.models.user.notEnoughPermission')}));
             }
 
-            // Users with the role 'Editor' have complex permissions when the action === 'destroy'
-            if (loadedPermissions.user && _.some(loadedPermissions.user.roles, {name: 'Editor'})) {
-                // Alternatively, if the user we are trying to edit is an Author, allow it
-                hasUserPermission = context.user === userModel.get('id') || userModel.hasRole('Author') || userModel.hasRole('Contributor');
-            }
+            hasUserPermission = actionDestroy(context, userModel, loadedPermissions, hasUserPermission);
         }
 
         if (hasUserPermission && hasAppPermission) {
