@@ -366,6 +366,19 @@ describe('Contexts', function () {
             res.locals.context.should.be.an.Array().with.lengthOf(0);
         });
 
+        it('will not identify a post when successfully identifying an AMP post but data not being set', function () {
+            // Setup test
+            setupContext('/welcome-to-ghost/amp/');
+
+            // Execute test
+            setResponseContext(req, res, data, coverage);
+
+            // Check context
+            should.exist(res.locals.context);
+            res.locals.context.should.be.an.Array().with.lengthOf(0);
+        });
+
+
         it('should correctly identify a page', function () {
             // Setup test
             setupContext('/about/');
